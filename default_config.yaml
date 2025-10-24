@@ -1,0 +1,139 @@
+# Default Configuration for Healthcare CRL Experiments
+
+# Environment Configuration
+environment:
+  num_hospitals: 100
+  num_suppliers: 50
+  num_distributors: 20
+  geographic_scope: "USA"
+  disruption_types:
+    - "pandemic"
+    - "hurricane"  
+    - "cyber_attack"
+    - "port_closure"
+  time_horizon: "daily"  # daily, weekly, real-time
+  episode_length: 100    # simulation steps per episode
+  
+# Agent Configuration
+agents:
+  crl_agent:
+    learning_rate: 0.0001
+    gamma: 0.99
+    epsilon_start: 1.0
+    epsilon_end: 0.01
+    epsilon_decay: 0.995
+    causal_lambda: 0.3
+    use_action_masking: true
+    use_reward_shaping: true
+    buffer_size: 10000
+    batch_size: 32
+    target_update_freq: 100
+    
+  baselines:
+    deterministic:
+      safety_stock_threshold: 0.3
+      stockout_threshold: 0.2
+      cost_threshold: 0.7
+    
+    pure_rl:
+      learning_rate: 0.0001
+      gamma: 0.99
+      epsilon_start: 1.0
+      epsilon_end: 0.01
+      epsilon_decay: 0.995
+      
+    causal_heuristic:
+      use_causal_oracle: true
+
+# Experiment Configuration  
+experiment:
+  name: "healthcare_crl_baseline_comparison"
+  num_episodes: 1000
+  num_runs: 5  # Multiple runs for statistical significance
+  save_frequency: 100  # Save model every N episodes
+  results_dir: "results/"
+  
+  # Disruption scenarios for evaluation
+  disruption_scenarios:
+    - name: "covid_pandemic"
+      type: "pandemic"
+      severity: 0.8
+      duration: 60
+      compound_events: ["port_closure"]
+      
+    - name: "hurricane_katrina"
+      type: "hurricane" 
+      severity: 0.7
+      duration: 14
+      affected_regions: ["southeast"]
+      compound_events: ["cyber_attack"]
+      
+    - name: "supply_chain_cyberattack"
+      type: "cyber_attack"
+      severity: 0.6
+      duration: 7
+      compound_events: []
+      
+    - name: "compound_crisis"
+      type: "pandemic"
+      severity: 0.9
+      duration: 90
+      compound_events: ["hurricane", "port_closure", "cyber_attack"]
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    - "recovery_time"
+    - "service_level_stability" 
+    - "cost_variance"
+    - "supplier_reliability_index"
+    - "inventory_turnover_ratio"
+    - "disruption_impact_index"
+    - "resilience_index"
+    - "digital_responsiveness_score"
+    - "managerial_interpretability_score"
+    - "carbon_resilience_metric"
+    
+  baseline_performance:
+    service_level: 0.95
+    cost_efficiency: 1.0
+    inventory_turnover: 12.0
+    
+  statistical_tests:
+    - "t_test"
+    - "wilcoxon"
+    - "bootstrap_ci"
+    
+# Visualization Configuration
+visualization:
+  create_plots: true
+  plot_types:
+    - "learning_curves"
+    - "metric_comparison"
+    - "causal_graph"
+    - "action_heatmap"
+    - "recovery_trajectories"
+    
+  save_format: "png"
+  plot_dir: "results/plots/"
+
+# Dashboard Configuration  
+dashboard:
+  port: 8050
+  host: "127.0.0.1"
+  debug: true
+  auto_refresh: 5  # seconds
+  
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_file: "results/experiment.log"
+  
+# Data Configuration
+data:
+  synthetic_data_dir: "data/"
+  real_data_sources:
+    erp_system: null
+    iot_sensors: null
+    external_apis: null
+  data_refresh_interval: "daily"
