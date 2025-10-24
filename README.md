@@ -609,7 +609,7 @@ python setup.py --validate-only
 
 ### 📧 Contact Information
 - **Research Team**: Healthcare AI Lab
-- **Technical Support**: framework-support@healthcare-ai.org
+- **Technical Support**: abhijit.ubale@gmail.com
 - **Documentation**: See `FRAMEWORK_DOCUMENTATION.md` for technical details
 
 ### 🔗 Related Resources
