@@ -22,27 +22,27 @@ Based on peer-reviewed research: *"AI-Driven Supply Chain Resilience under Multi
 ```mermaid
 graph TB
     subgraph "Data Layer"
-        A[Healthcare Entities<br/>• Hospitals (5000)<br/>• Suppliers (500)<br/>• Distributors (200)] 
-        B[Disruption Events<br/>• Pandemics<br/>• Natural Disasters<br/>• Cyber Attacks<br/>• Supply Shortages]
-        C[Historical Data<br/>• 5+ Years<br/>• Geographic Scope: US<br/>• Seasonal Patterns]
+        A["Healthcare Entities<br/>• Hospitals (5000)<br/>• Suppliers (500)<br/>• Distributors (200)"] 
+        B["Disruption Events<br/>• Pandemics<br/>• Natural Disasters<br/>• Cyber Attacks<br/>• Supply Shortages"]
+        C["Historical Data<br/>• 5+ Years<br/>• Geographic Scope: US<br/>• Seasonal Patterns"]
     end
     
     subgraph "Causal Intelligence Layer"
-        D[Causal Graph Construction<br/>📊 Bayesian Networks<br/>📈 40+ Relationships]
-        E[Causal Oracle<br/>🧠 Effect Prediction<br/>⚖️ Action Feasibility]
-        F[Causal Discovery<br/>🔍 Constraint-based Learning<br/>📋 Domain Knowledge Integration]
+        D["Causal Graph Construction<br/>📊 Bayesian Networks<br/>📈 40+ Relationships"]
+        E["Causal Oracle<br/>🧠 Effect Prediction<br/>⚖️ Action Feasibility"]
+        F["Causal Discovery<br/>🔍 Constraint-based Learning<br/>📋 Domain Knowledge Integration"]
     end
     
     subgraph "Reinforcement Learning Layer"
-        G[CRL Agent<br/>🤖 Deep Q-Network<br/>🎯 Causal Action Masking<br/>💰 Reward Shaping]
-        H[Multi-Agent Environment<br/>🌐 Healthcare Supply Chain<br/>📦 Inventory Management<br/>🚛 Logistics Coordination]
-        I[Baseline Agents<br/>📊 Deterministic<br/>🤖 Pure RL<br/>💡 Causal Heuristic]
+        G["CRL Agent<br/>🤖 Deep Q-Network<br/>🎯 Causal Action Masking<br/>💰 Reward Shaping"]
+        H["Multi-Agent Environment<br/>🌐 Healthcare Supply Chain<br/>📦 Inventory Management<br/>🚛 Logistics Coordination"]
+        I["Baseline Agents<br/>📊 Deterministic<br/>🤖 Pure RL<br/>💡 Causal Heuristic"]
     end
     
     subgraph "Evaluation & Monitoring Layer"
-        J[Resilience Metrics<br/>📈 10 Core Metrics<br/>⏱️ Recovery Time<br/>💪 Adaptability Score]
-        K[Real-time Dashboard<br/>📺 Live Monitoring<br/>📊 Performance Analytics<br/>🚨 Alert System]
-        L[Comparative Analysis<br/>⚖️ Agent Benchmarking<br/>📈 Statistical Significance<br/>📋 Research Reports]
+        J["Resilience Metrics<br/>📈 10 Core Metrics<br/>⏱️ Recovery Time<br/>💪 Adaptability Score"]
+        K["Real-time Dashboard<br/>📺 Live Monitoring<br/>📊 Performance Analytics<br/>🚨 Alert System"]
+        L["Comparative Analysis<br/>⚖️ Agent Benchmarking<br/>📈 Statistical Significance<br/>📋 Research Reports"]
     end
     
     A --> D
@@ -59,10 +59,10 @@ graph TB
     J --> K
     J --> L
     
-    classDef dataLayer fill:#e1f5fe
-    classDef causalLayer fill:#f3e5f5
-    classDef rlLayer fill:#e8f5e8
-    classDef evalLayer fill:#fff3e0
+    classDef dataLayer fill:#1e3a8a,stroke:#3b82f6,stroke-width:2px,color:#ffffff
+    classDef causalLayer fill:#7c2d92,stroke:#a855f7,stroke-width:2px,color:#ffffff
+    classDef rlLayer fill:#166534,stroke:#22c55e,stroke-width:2px,color:#ffffff
+    classDef evalLayer fill:#ea580c,stroke:#f97316,stroke-width:2px,color:#ffffff
     
     class A,B,C dataLayer
     class D,E,F causalLayer
@@ -77,22 +77,22 @@ graph TB
 ```mermaid
 graph LR
     subgraph "Healthcare Entities"
-        H1[🏥 Hospitals<br/>• Emergency Departments<br/>• ICU Units<br/>• Surgical Centers<br/>• Outpatient Clinics]
-        S1[🏭 Suppliers<br/>• Medical Device Manufacturers<br/>• Pharmaceutical Companies<br/>• PPE Producers<br/>• Diagnostic Equipment]
-        D1[🚛 Distributors<br/>• Medical Supply Distributors<br/>• Logistics Providers<br/>• Warehouse Operators<br/>• Transportation Networks]
+        H1["🏥 Hospitals<br/>• Emergency Departments<br/>• ICU Units<br/>• Surgical Centers<br/>• Outpatient Clinics"]
+        S1["🏭 Suppliers<br/>• Medical Device Manufacturers<br/>• Pharmaceutical Companies<br/>• PPE Producers<br/>• Diagnostic Equipment"]
+        D1["🚛 Distributors<br/>• Medical Supply Distributors<br/>• Logistics Providers<br/>• Warehouse Operators<br/>• Transportation Networks"]
     end
     
     subgraph "AI Agents"
-        CRL[🧠 CRL Agent<br/>• Causal Reasoning<br/>• Action Masking<br/>• Reward Shaping<br/>• Adaptive Learning]
-        DET[📊 Deterministic Agent<br/>• Rule-based Decisions<br/>• Predictable Actions<br/>• Domain Heuristics]
-        PRL[🤖 Pure RL Agent<br/>• Standard Q-Learning<br/>• No Causal Knowledge<br/>• Trial-and-Error Learning]
-        CAU[💡 Causal Heuristic Agent<br/>• Causal Rules Only<br/>• No Learning<br/>• Static Strategies]
+        CRL["🧠 CRL Agent<br/>• Causal Reasoning<br/>• Action Masking<br/>• Reward Shaping<br/>• Adaptive Learning"]
+        DET["📊 Deterministic Agent<br/>• Rule-based Decisions<br/>• Predictable Actions<br/>• Domain Heuristics"]
+        PRL["🤖 Pure RL Agent<br/>• Standard Q-Learning<br/>• No Causal Knowledge<br/>• Trial-and-Error Learning"]
+        CAU["💡 Causal Heuristic Agent<br/>• Causal Rules Only<br/>• No Learning<br/>• Static Strategies"]
     end
     
     subgraph "System Components"
-        ENV[🌐 Environment<br/>• Supply Chain Simulation<br/>• Disruption Modeling<br/>• State Management]
-        ORC[🔮 Causal Oracle<br/>• Effect Prediction<br/>• Feasibility Assessment<br/>• Intervention Planning]
-        MET[📈 Metrics Engine<br/>• Performance Tracking<br/>• Resilience Scoring<br/>• Comparative Analysis]
+        ENV["🌐 Environment<br/>• Supply Chain Simulation<br/>• Disruption Modeling<br/>• State Management"]
+        ORC["🔮 Causal Oracle<br/>• Effect Prediction<br/>• Feasibility Assessment<br/>• Intervention Planning"]
+        MET["📈 Metrics Engine<br/>• Performance Tracking<br/>• Resilience Scoring<br/>• Comparative Analysis"]
     end
     
     H1 <--> ENV
@@ -113,9 +113,9 @@ graph LR
     PRL --> MET
     CAU --> MET
     
-    classDef entity fill:#e3f2fd
-    classDef agent fill:#f1f8e9
-    classDef system fill:#fce4ec
+    classDef entity fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#38bdf8
+    classDef agent fill:#14532d,stroke:#4ade80,stroke-width:2px,color:#4ade80
+    classDef system fill:#451a03,stroke:#f59e0b,stroke-width:2px,color:#f59e0b
     
     class H1,S1,D1 entity
     class CRL,DET,PRL,CAU agent
@@ -128,44 +128,44 @@ graph LR
 
 ```mermaid
 flowchart TD
-    START([🚀 Start Framework]) --> SETUP[⚙️ Setup & Installation<br/>python setup.py]
-    SETUP --> CONFIG[📝 Configure Experiment<br/>Edit config/default_config.yaml]
+    START([🚀 Start Framework]) --> SETUP["⚙️ Setup & Installation<br/>python setup.py"]
+    SETUP --> CONFIG["📝 Configure Experiment<br/>Edit config/default_config.yaml"]
     CONFIG --> CHOICE{Choose Mode}
     
-    CHOICE -->|Training| TRAIN[🎯 Train CRL Agent<br/>python main.py --mode train]
-    CHOICE -->|Evaluation| EVAL[📊 Comparative Evaluation<br/>python main.py --mode evaluate] 
-    CHOICE -->|Monitoring| DASH[📺 Real-time Dashboard<br/>python main.py --mode dashboard]
+    CHOICE -->|Training| TRAIN["🎯 Train CRL Agent<br/>python main.py --mode train"]
+    CHOICE -->|Evaluation| EVAL["📊 Comparative Evaluation<br/>python main.py --mode evaluate"] 
+    CHOICE -->|Monitoring| DASH["📺 Real-time Dashboard<br/>python main.py --mode dashboard"]
     
-    TRAIN --> LEARN[🧠 Agent Learning Process]
-    LEARN --> CAUSAL[🔍 Causal Reasoning<br/>• Build Bayesian Network<br/>• Action Masking<br/>• Reward Shaping]
-    CAUSAL --> ACTION[⚡ Execute Actions<br/>• Switch Supplier<br/>• Increase Safety Stock<br/>• Emergency Procurement<br/>• Reroute Shipments<br/>• Allocate Resources]
+    TRAIN --> LEARN["🧠 Agent Learning Process"]
+    LEARN --> CAUSAL["🔍 Causal Reasoning<br/>• Build Bayesian Network<br/>• Action Masking<br/>• Reward Shaping"]
+    CAUSAL --> ACTION["⚡ Execute Actions<br/>• Switch Supplier<br/>• Increase Safety Stock<br/>• Emergency Procurement<br/>• Reroute Shipments<br/>• Allocate Resources"]
     
-    ACTION --> FEEDBACK[📈 Collect Feedback<br/>• Reward Signals<br/>• State Updates<br/>• Performance Metrics]
-    FEEDBACK --> IMPROVE[📚 Update Knowledge<br/>• Policy Improvement<br/>• Causal Graph Updates<br/>• Strategy Refinement]
+    ACTION --> FEEDBACK["📈 Collect Feedback<br/>• Reward Signals<br/>• State Updates<br/>• Performance Metrics"]
+    FEEDBACK --> IMPROVE["📚 Update Knowledge<br/>• Policy Improvement<br/>• Causal Graph Updates<br/>• Strategy Refinement"]
     IMPROVE --> CONVERGENCE{Converged?}
     CONVERGENCE -->|No| ACTION
-    CONVERGENCE -->|Yes| SAVE[💾 Save Trained Model]
+    CONVERGENCE -->|Yes| SAVE["💾 Save Trained Model"]
     
-    EVAL --> BASELINE[🔄 Run All Agents<br/>• CRL Agent<br/>• Deterministic<br/>• Pure RL<br/>• Causal Heuristic]
-    BASELINE --> COMPARE[⚖️ Performance Comparison<br/>• Statistical Analysis<br/>• Resilience Metrics<br/>• Significance Testing]
-    COMPARE --> REPORT[📋 Generate Reports<br/>• Agent Rankings<br/>• Key Insights<br/>• Recommendations]
+    EVAL --> BASELINE["🔄 Run All Agents<br/>• CRL Agent<br/>• Deterministic<br/>• Pure RL<br/>• Causal Heuristic"]
+    BASELINE --> COMPARE["⚖️ Performance Comparison<br/>• Statistical Analysis<br/>• Resilience Metrics<br/>• Significance Testing"]
+    COMPARE --> REPORT["📋 Generate Reports<br/>• Agent Rankings<br/>• Key Insights<br/>• Recommendations"]
     
-    DASH --> MONITOR[👀 Live Monitoring<br/>• Real-time Metrics<br/>• Performance Tracking<br/>• Alert System]
-    MONITOR --> ALERTS[🚨 Proactive Alerts<br/>• Disruption Detection<br/>• Performance Degradation<br/>• Intervention Opportunities]
+    DASH --> MONITOR["👀 Live Monitoring<br/>• Real-time Metrics<br/>• Performance Tracking<br/>• Alert System"]
+    MONITOR --> ALERTS["🚨 Proactive Alerts<br/>• Disruption Detection<br/>• Performance Degradation<br/>• Intervention Opportunities"]
     
-    SAVE --> RESULTS[📊 Results Analysis]
+    SAVE --> RESULTS["📊 Results Analysis"]
     REPORT --> RESULTS
     ALERTS --> RESULTS
     
-    RESULTS --> INSIGHTS[💡 Key Insights<br/>• Optimal Strategies<br/>• Causal Relationships<br/>• Resilience Patterns]
-    INSIGHTS --> DEPLOY[🚀 Deploy Solutions<br/>• Implement Policies<br/>• Monitor Performance<br/>• Continuous Improvement]
+    RESULTS --> INSIGHTS["💡 Key Insights<br/>• Optimal Strategies<br/>• Causal Relationships<br/>• Resilience Patterns"]
+    INSIGHTS --> DEPLOY["🚀 Deploy Solutions<br/>• Implement Policies<br/>• Monitor Performance<br/>• Continuous Improvement"]
     
     DEPLOY --> END([✅ Mission Complete])
     
-    classDef process fill:#e8f5e8
-    classDef decision fill:#fff3e0
-    classDef result fill:#f3e5f5
-    classDef endpoint fill:#e1f5fe
+    classDef process fill:#166534,stroke:#22c55e,stroke-width:2px,color:#ffffff
+    classDef decision fill:#ca8a04,stroke:#eab308,stroke-width:2px,color:#ffffff
+    classDef result fill:#7c2d92,stroke:#c084fc,stroke-width:2px,color:#ffffff
+    classDef endpoint fill:#1e40af,stroke:#60a5fa,stroke-width:2px,color:#ffffff
     
     class SETUP,CONFIG,TRAIN,EVAL,DASH,LEARN,CAUSAL,ACTION,FEEDBACK,IMPROVE,BASELINE,COMPARE,MONITOR,ALERTS process
     class CHOICE,CONVERGENCE decision
@@ -180,27 +180,27 @@ flowchart TD
 ```mermaid
 graph TB
     subgraph "Performance Outputs"
-        P1[📈 Resilience Metrics<br/>• Recovery Time: 2.3 days avg<br/>• Adaptability Score: 0.87<br/>• Service Level: 96.2%<br/>• Cost Efficiency: +23%]
-        P2[🏆 Agent Rankings<br/>• CRL Agent: #1 (0.94 score)<br/>• Causal Heuristic: #2 (0.78)<br/>• Pure RL: #3 (0.71)<br/>• Deterministic: #4 (0.65)]
-        P3[📊 Statistical Analysis<br/>• Confidence Intervals<br/>• Significance Tests<br/>• Effect Sizes<br/>• Performance Distributions]
+        P1["📈 Resilience Metrics<br/>• Recovery Time: 2.3 days avg<br/>• Adaptability Score: 0.87<br/>• Service Level: 96.2%<br/>• Cost Efficiency: +23%"]
+        P2["🏆 Agent Rankings<br/>• CRL Agent: #1 (0.94 score)<br/>• Causal Heuristic: #2 (0.78)<br/>• Pure RL: #3 (0.71)<br/>• Deterministic: #4 (0.65)"]
+        P3["📊 Statistical Analysis<br/>• Confidence Intervals<br/>• Significance Tests<br/>• Effect Sizes<br/>• Performance Distributions"]
     end
     
     subgraph "Actionable Insights"
-        I1[💡 Optimal Strategies<br/>• Supplier Diversification<br/>• Dynamic Safety Stock<br/>• Predictive Procurement<br/>• Agile Logistics]
-        I2[🔗 Causal Relationships<br/>• Supplier → Service Level<br/>• Inventory → Resilience<br/>• Lead Time → Cost<br/>• Disruption → Recovery]
-        I3[🎯 Intervention Points<br/>• Critical Decision Moments<br/>• High-Impact Actions<br/>• Resource Allocation<br/>• Risk Mitigation]
+        I1["💡 Optimal Strategies<br/>• Supplier Diversification<br/>• Dynamic Safety Stock<br/>• Predictive Procurement<br/>• Agile Logistics"]
+        I2["🔗 Causal Relationships<br/>• Supplier → Service Level<br/>• Inventory → Resilience<br/>• Lead Time → Cost<br/>• Disruption → Recovery"]
+        I3["🎯 Intervention Points<br/>• Critical Decision Moments<br/>• High-Impact Actions<br/>• Resource Allocation<br/>• Risk Mitigation"]
     end
     
     subgraph "Research Outputs"
-        R1[📋 Research Reports<br/>• Academic Publications<br/>• Technical Documentation<br/>• Methodology Papers<br/>• Case Studies]
-        R2[📈 Visualization Assets<br/>• Performance Graphs<br/>• Causal Network Maps<br/>• Decision Trees<br/>• Interactive Dashboards]
-        R3[💾 Trained Models<br/>• CRL Agent Weights<br/>• Causal Graph Structure<br/>• Policy Networks<br/>• Baseline Comparisons]
+        R1["📋 Research Reports<br/>• Academic Publications<br/>• Technical Documentation<br/>• Methodology Papers<br/>• Case Studies"]
+        R2["📈 Visualization Assets<br/>• Performance Graphs<br/>• Causal Network Maps<br/>• Decision Trees<br/>• Interactive Dashboards"]
+        R3["💾 Trained Models<br/>• CRL Agent Weights<br/>• Causal Graph Structure<br/>• Policy Networks<br/>• Baseline Comparisons"]
     end
     
     subgraph "Implementation Artifacts"
-        A1[⚙️ Configuration Files<br/>• Optimal Parameters<br/>• Environment Settings<br/>• Agent Configurations<br/>• Deployment Specs]
-        A2[🔧 Integration APIs<br/>• Real-time Interfaces<br/>• Data Connectors<br/>• Alert Systems<br/>• Monitoring Endpoints]
-        A3[📚 Documentation<br/>• User Guides<br/>• API References<br/>• Best Practices<br/>• Troubleshooting]
+        A1["⚙️ Configuration Files<br/>• Optimal Parameters<br/>• Environment Settings<br/>• Agent Configurations<br/>• Deployment Specs"]
+        A2["🔧 Integration APIs<br/>• Real-time Interfaces<br/>• Data Connectors<br/>• Alert Systems<br/>• Monitoring Endpoints"]
+        A3["📚 Documentation<br/>• User Guides<br/>• API References<br/>• Best Practices<br/>• Troubleshooting"]
     end
     
     P1 --> I1
@@ -215,10 +215,10 @@ graph TB
     R2 --> A2
     R3 --> A3
     
-    classDef performance fill:#e8f5e8
-    classDef insights fill:#fff3e0
-    classDef research fill:#f3e5f5
-    classDef implementation fill:#e1f5fe
+    classDef performance fill:#166534,stroke:#22c55e,stroke-width:2px,color:#ffffff
+    classDef insights fill:#ca8a04,stroke:#eab308,stroke-width:2px,color:#ffffff
+    classDef research fill:#7c2d92,stroke:#c084fc,stroke-width:2px,color:#ffffff
+    classDef implementation fill:#1e40af,stroke:#60a5fa,stroke-width:2px,color:#ffffff
     
     class P1,P2,P3 performance
     class I1,I2,I3 insights
@@ -334,23 +334,23 @@ mindmap
 ```mermaid
 graph LR
     subgraph "Without CRL Framework"
-        L1[😰 Reactive Responses<br/>• Crisis Management<br/>• Emergency Scrambling<br/>• Fire-fighting Mode<br/>• Post-hoc Solutions]
+        L1["😰 Reactive Responses<br/>• Crisis Management<br/>• Emergency Scrambling<br/>• Fire-fighting Mode<br/>• Post-hoc Solutions"]
         
-        L2[🔍 Limited Visibility<br/>• No Early Warning<br/>• Unclear Causality<br/>• Poor Prediction<br/>• Reactive Analytics]
+        L2["🔍 Limited Visibility<br/>• No Early Warning<br/>• Unclear Causality<br/>• Poor Prediction<br/>• Reactive Analytics"]
         
-        L3[💸 Higher Costs<br/>• 40% Cost Increase<br/>• Inefficient Resource Use<br/>• Emergency Premiums<br/>• Recovery Expenses]
+        L3["💸 Higher Costs<br/>• 40% Cost Increase<br/>• Inefficient Resource Use<br/>• Emergency Premiums<br/>• Recovery Expenses"]
         
-        L4[⏱️ Slower Recovery<br/>• 7+ Day Recovery<br/>• Service Disruptions<br/>• Patient Impact<br/>• Reputation Damage]
+        L4["⏱️ Slower Recovery<br/>• 7+ Day Recovery<br/>• Service Disruptions<br/>• Patient Impact<br/>• Reputation Damage"]
         
-        L5[🎲 Trial-and-Error<br/>• Untested Strategies<br/>• Learning from Failures<br/>• Repeated Mistakes<br/>• Inefficient Learning]
+        L5["🎲 Trial-and-Error<br/>• Untested Strategies<br/>• Learning from Failures<br/>• Repeated Mistakes<br/>• Inefficient Learning"]
     end
     
     subgraph "Consequences"
-        C1[🏥 Healthcare Impact<br/>• Patient Safety Risks<br/>• Treatment Delays<br/>• Reduced Quality<br/>• Staff Stress]
+        C1["🏥 Healthcare Impact<br/>• Patient Safety Risks<br/>• Treatment Delays<br/>• Reduced Quality<br/>• Staff Stress"]
         
-        C2[💼 Business Impact<br/>• Revenue Loss<br/>• Competitive Disadvantage<br/>• Stakeholder Concerns<br/>• Regulatory Issues]
+        C2["💼 Business Impact<br/>• Revenue Loss<br/>• Competitive Disadvantage<br/>• Stakeholder Concerns<br/>• Regulatory Issues"]
         
-        C3[🌍 Societal Impact<br/>• Public Health Risks<br/>• Community Disruption<br/>• Economic Burden<br/>• Trust Erosion]
+        C3["🌍 Societal Impact<br/>• Public Health Risks<br/>• Community Disruption<br/>• Economic Burden<br/>• Trust Erosion"]
     end
     
     L1 --> C1
@@ -361,8 +361,8 @@ graph LR
     C1 --> C3
     C2 --> C3
     
-    classDef loss fill:#ffebee
-    classDef consequence fill:#f3e5f5
+    classDef loss fill:#991b1b,stroke:#ef4444,stroke-width:2px,color:#ffffff
+    classDef consequence fill:#7c2d92,stroke:#f87171,stroke-width:2px,color:#ffffff
     
     class L1,L2,L3,L4,L5 loss
     class C1,C2,C3 consequence
