@@ -288,17 +288,33 @@ metrics.export_research_data('results/research_export.csv')
 ## 🎁 Key Benefits of This Framework
 
 ```mermaid
+%%{init: {
+  'theme': 'dark',
+  'themeVariables': {
+    'primaryColor': '#0ea5e9',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#38bdf8',
+    'lineColor': '#7dd3fc',
+    'secondaryColor': '#8b5cf6',
+    'tertiaryColor': '#10b981',
+    'quaternaryColor': '#f59e0b',
+    'background': '#020617',
+    'mainBkg': '#0f172a',
+    'secondBkg': '#1e293b',
+    'tertiaryBkg': '#334155'
+  }
+}}%%
 mindmap
   root((🏥 CRL Framework Benefits))
     🎯 Proactive Intelligence
       Early Warning Systems
-      Predictive Analytics
+      Predictive Analytics  
       Risk Anticipation
-      Scenario Planning
+      Strategic Planning
     
     🧠 Causal Understanding
       Root Cause Analysis
-      Intervention Planning  
+      Intervention Planning
       Effect Prediction
       Scientific Reasoning
     
