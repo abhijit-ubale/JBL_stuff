@@ -41,51 +41,53 @@ Based on peer-reviewed research: *"AI-Driven Supply Chain Resilience under Multi
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#3B82F6',
-    'primaryTextColor': '#FFFFFF', 
-    'primaryBorderColor': '#1E40AF',
-    'lineColor': '#6366F1',
-    'secondaryColor': '#8B5CF6',
-    'tertiaryColor': '#10B981',
-    'quaternaryColor': '#F59E0B',
-    'background': '#F8FAFC',
-    'mainBkg': '#FFFFFF',
-    'secondBkg': '#F1F5F9',
-    'tertiaryBkg': '#E2E8F0'
+    'primaryColor': '#002D9C',
+    'primaryTextColor': '#FFFFFF',
+    'primaryBorderColor': '#001F6B',
+    'lineColor': '#525252',
+    'secondaryColor': '#0F62FE',
+    'tertiaryColor': '#198038',
+    'quaternaryColor': '#8A3FFC',
+    'background': '#FFFFFF',
+    'mainBkg': '#F4F4F4',
+    'secondBkg': '#E0E0E0',
+    'tertiaryBkg': '#C6C6C6',
+    'fontFamily': 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+    'fontSize': '13px',
+    'fontWeight': '400'
   }
 }}%%
 flowchart TD
-    subgraph DL ["🗃️ Real Data Sources - 10,425 Records"]
-        A["🏥 GHSC Supply Chain<br/>Train: 1,600 | Test: 400<br/>Features: 22 columns"]
-        B["🌍 International LPI<br/>Train: 111 | Test: 28<br/>Features: 23 columns"] 
-        C["🌪️ Natural Disasters<br/>Train: 4,580 | Test: 1,146<br/>Features: 49 columns"]
-        D["🚨 Public Emergencies<br/>Train: 2,048 | Test: 512<br/>Features: 49 columns"]
+    subgraph DL ["Real Data Sources - 10,425 Records"]
+        A["GHSC Supply Chain<br/>Train: 1,600 | Test: 400<br/>Features: 22 columns"]
+        B["International LPI<br/>Train: 111 | Test: 28<br/>Features: 23 columns"] 
+        C["Natural Disasters<br/>Train: 4,580 | Test: 1,146<br/>Features: 49 columns"]
+        D["Public Emergencies<br/>Train: 2,048 | Test: 512<br/>Features: 49 columns"]
     end
     
-    subgraph PE ["🧠 Processing Engine"]
-        E["📊 RealDataPipeline<br/>CSV Integration<br/>27 Features Engineered"]
-        F["⚡ State Vectors<br/>20-Dimensional<br/>Real Context"]
+    subgraph PE ["Processing Engine"]
+        E["RealDataPipeline<br/>CSV Integration<br/>27 Features Engineered"]
+        F["State Vectors<br/>20-Dimensional<br/>Real Context"]
     end
 
-    subgraph CI ["🧮 Causal Intelligence"]
-        G["🔗 Causal Graph<br/>18 Variables<br/>31 Relationships"]
-        H["🎯 Causal Oracle<br/>Effect Prediction<br/>Action Feasibility"] 
-        I["🔍 Discovery Engine<br/>Data-driven Causality<br/>Intervention Planning"]
+    subgraph CI ["Causal Intelligence"]
+        G["Causal Graph<br/>18 Variables<br/>31 Relationships"]
+        H["Causal Oracle<br/>Effect Prediction<br/>Action Feasibility"] 
+        I["Discovery Engine<br/>Data-driven Causality<br/>Intervention Planning"]
     end
     
-    subgraph RL ["🤖 Reinforcement Learning"]
-        J["🧠 CRL Agent<br/>Action: 5 (Optimal)<br/>Success: 94%"]
-        K["🌐 Environment<br/>Real Episodes<br/>CSV Simulation"]
-        L["📊 Baseline Agents<br/>Deterministic: Action 2<br/>Pure RL: Action 1"]
+    subgraph RL ["Reinforcement Learning"]
+        J["CRL Agent<br/>Action: 5 (Optimal)<br/>Success: 94%"]
+        K["Environment<br/>Real Episodes<br/>CSV Simulation"]
+        L["Baseline Agents<br/>Deterministic: Action 2<br/>Pure RL: Action 1"]
     end
     
-    subgraph EV ["� Evaluation & Validation"]
-        M["📊 Real Metrics<br/>Service Level: 96.2%<br/>Recovery: 2.0 episodes"]
-        N["📺 Dashboard<br/>Live Analytics<br/>Performance Tracking"]
-        O["✅ Testing<br/>5/5 Tests Passed<br/>Integration Validated"]
+    subgraph EV ["Evaluation & Validation"]
+        M["Real Metrics<br/>Service Level: 96.2%<br/>Recovery: 2.0 episodes"]
+        N["Dashboard<br/>Live Analytics<br/>Performance Tracking"]
+        O["Testing<br/>5/5 Tests Passed<br/>Integration Validated"]
     end
     
-    %% Connections
     A --> E
     B --> E
     C --> E
@@ -102,12 +104,11 @@ flowchart TD
     M --> N
     M --> O
     
-    %% Styling
-    classDef dataNodes fill:#3B82F6,stroke:#1E40AF,stroke-width:3px,color:#FFFFFF
-    classDef processNodes fill:#8B5CF6,stroke:#7C3AED,stroke-width:3px,color:#FFFFFF
-    classDef causalNodes fill:#10B981,stroke:#059669,stroke-width:3px,color:#FFFFFF
-    classDef rlNodes fill:#F59E0B,stroke:#D97706,stroke-width:3px,color:#FFFFFF
-    classDef evalNodes fill:#EF4444,stroke:#DC2626,stroke-width:3px,color:#FFFFFF
+    classDef dataNodes fill:#002D9C,stroke:#001F6B,stroke-width:1.5px,color:#FFFFFF
+    classDef processNodes fill:#0F62FE,stroke:#0043CE,stroke-width:1.5px,color:#FFFFFF
+    classDef causalNodes fill:#198038,stroke:#0E6027,stroke-width:1.5px,color:#FFFFFF
+    classDef rlNodes fill:#8A3FFC,stroke:#6929C4,stroke-width:1.5px,color:#FFFFFF
+    classDef evalNodes fill:#005D5D,stroke:#004144,stroke-width:1.5px,color:#FFFFFF
     
     class A,B,C,D dataNodes
     class E,F processNodes
