@@ -312,35 +312,38 @@ Real data revealed healthcare supply chain characteristics:
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#1E3A8A',
+    'primaryColor': '#002D9C',
     'primaryTextColor': '#FFFFFF',
-    'primaryBorderColor': '#1E40AF',
-    'lineColor': '#374151',
-    'secondaryColor': '#065F46',
-    'tertiaryColor': '#7C2D12',
-    'background': '#F9FAFB',
-    'mainBkg': '#FFFFFF',
-    'secondBkg': '#F3F4F6'
+    'primaryBorderColor': '#001F6B',
+    'lineColor': '#4F4F4F',
+    'secondaryColor': '#0F62FE',
+    'tertiaryColor': '#8A3FFC',
+    'background': '#FFFFFF',
+    'mainBkg': '#F4F4F4',
+    'secondBkg': '#E0E0E0',
+    'fontFamily': 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+    'fontSize': '14px',
+    'fontWeight': '400'
   }
 }}%%
 flowchart LR
-    subgraph HE ["🏥 Healthcare Entities"]
-        H1["🏥 Hospitals<br/>Emergency Depts<br/>ICU Units<br/>Surgical Centers"]
-        S1["🏭 Suppliers<br/>Device Manufacturers<br/>Pharma Companies<br/>PPE Producers"]
-        D1["🚛 Distributors<br/>Medical Supply<br/>Logistics Providers<br/>Transportation"]
+    subgraph HE ["Healthcare Entities"]
+        H1["Hospitals<br/>Emergency Departments<br/>ICU Units<br/>Surgical Centers"]
+        S1["Suppliers<br/>Device Manufacturers<br/>Pharmaceutical Companies<br/>PPE Producers"]
+        D1["Distributors<br/>Medical Supply Chain<br/>Logistics Providers<br/>Transportation Networks"]
     end
     
-    subgraph AI ["🤖 AI Agent Ecosystem"]
-        CRL["🧠 CRL Agent<br/>Causal Reasoning<br/>Action Masking<br/>Success Rate: 94%"]
-        DET["📊 Deterministic<br/>Rule-based Logic<br/>Action: 2<br/>Success Rate: 71%"]
-        PRL["⚡ Pure RL<br/>Q-Learning<br/>Action: 1<br/>Success Rate: 78%"]
-        CAU["💡 Causal Heuristic<br/>Static Rules<br/>Action: 1<br/>Success Rate: 82%"]
+    subgraph AI ["AI Agent Ecosystem"]
+        CRL["CRL Agent<br/>Causal Reasoning<br/>Action Masking<br/>Success Rate: 94%"]
+        DET["Deterministic Agent<br/>Rule-based Logic<br/>Action: 2<br/>Success Rate: 71%"]
+        PRL["Pure RL Agent<br/>Q-Learning<br/>Action: 1<br/>Success Rate: 78%"]
+        CAU["Causal Heuristic<br/>Static Rules<br/>Action: 1<br/>Success Rate: 82%"]
     end
     
-    subgraph SYS ["⚙️ System Components"]
-        ENV["🌐 Real Environment<br/>CSV-based Episodes<br/>10,425 Records<br/>20D State Vectors"]
-        ORC["🔮 Causal Oracle<br/>18 Variables<br/>31 Relationships<br/>Effect Prediction"]
-        MET["📈 Metrics Engine<br/>10 KPIs Validated<br/>Recovery: 2.0 episodes<br/>Service: 96.2%"]
+    subgraph SYS ["System Components"]
+        ENV["Real Environment<br/>CSV-based Episodes<br/>10,425 Records<br/>20D State Vectors"]
+        ORC["Causal Oracle<br/>18 Variables<br/>31 Relationships<br/>Effect Prediction"]
+        MET["Metrics Engine<br/>10 KPIs Validated<br/>Recovery: 2.0 episodes<br/>Service: 96.2%"]
     end
     
     H1 -.-> ENV
@@ -361,9 +364,9 @@ flowchart LR
     PRL --> MET
     CAU --> MET
     
-    classDef entityStyle fill:#1E3A8A,stroke:#1E40AF,stroke-width:2px,color:#FFFFFF
-    classDef agentStyle fill:#065F46,stroke:#059669,stroke-width:2px,color:#FFFFFF
-    classDef systemStyle fill:#7C2D12,stroke:#92400E,stroke-width:2px,color:#FFFFFF
+    classDef entityStyle fill:#002D9C,stroke:#001F6B,stroke-width:1.5px,color:#FFFFFF
+    classDef agentStyle fill:#0F62FE,stroke:#0043CE,stroke-width:1.5px,color:#FFFFFF
+    classDef systemStyle fill:#8A3FFC,stroke:#6929C4,stroke-width:1.5px,color:#FFFFFF
     
     class H1,S1,D1 entityStyle
     class CRL,DET,PRL,CAU agentStyle
@@ -745,61 +748,64 @@ metrics.export_research_data('results/research_export.csv')
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#1E3A8A',
+    'primaryColor': '#002D9C',
     'primaryTextColor': '#FFFFFF',
-    'primaryBorderColor': '#1E40AF',
-    'lineColor': '#374151',
-    'secondaryColor': '#065F46',
-    'tertiaryColor': '#7C2D12',
-    'background': '#F9FAFB',
-    'mainBkg': '#FFFFFF',
-    'secondBkg': '#F3F4F6'
+    'primaryBorderColor': '#001F6B',
+    'lineColor': '#525252',
+    'secondaryColor': '#0F62FE',
+    'tertiaryColor': '#198038',
+    'background': '#FFFFFF',
+    'mainBkg': '#F4F4F4',
+    'secondBkg': '#E0E0E0',
+    'fontFamily': 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+    'fontSize': '13px',
+    'fontWeight': '400'
   }
 }}%%
 graph TB
-    subgraph "🚀 CRL Framework Value Ecosystem"
-        CORE["🏥 Healthcare CRL<br/>Framework"]
+    subgraph "CRL Framework Value Ecosystem"
+        CORE["Healthcare CRL Framework"]
         
-        subgraph "🎯 Intelligence Layer"
-            INTEL1["🚨 Early Warning<br/>AI Detection in 6-12hrs<br/>vs 3-5 days manual"]
-            INTEL2["📊 Predictive Analytics<br/>3-6 month forecasting<br/>vs 1-2 week reactive"]
-            INTEL3["🔮 Risk Anticipation<br/>Multi-source integration<br/>Pattern recognition"]
-            INTEL4["📋 Strategic Planning<br/>Dynamic resource allocation<br/>Scenario-based decisions"]
+        subgraph "Intelligence Layer"
+            INTEL1["Early Warning System<br/>AI Detection in 6-12hrs<br/>vs 3-5 days manual"]
+            INTEL2["Predictive Analytics<br/>3-6 month forecasting<br/>vs 1-2 week reactive"]
+            INTEL3["Risk Anticipation<br/>Multi-source integration<br/>Pattern recognition"]
+            INTEL4["Strategic Planning<br/>Dynamic resource allocation<br/>Scenario-based decisions"]
         end
         
-        subgraph "🧠 Causal Intelligence"
-            CAUSAL1["🔍 Root Cause Analysis<br/>Bayesian Networks<br/>Scientific reasoning"]
-            CAUSAL2["🎯 Intervention Planning<br/>Do-calculus optimization<br/>Impact prediction"]
-            CAUSAL3["⚖️ Effect Prediction<br/>Counterfactual analysis<br/>Evidence-based decisions"]
-            CAUSAL4["🔬 Knowledge Integration<br/>Systematic learning<br/>Hypothesis testing"]
+        subgraph "Causal Intelligence"
+            CAUSAL1["Root Cause Analysis<br/>Bayesian Networks<br/>Scientific reasoning"]
+            CAUSAL2["Intervention Planning<br/>Do-calculus optimization<br/>Impact prediction"]
+            CAUSAL3["Effect Prediction<br/>Counterfactual analysis<br/>Evidence-based decisions"]
+            CAUSAL4["Knowledge Integration<br/>Systematic learning<br/>Hypothesis testing"]
         end
         
-        subgraph "🤖 Learning Engine"
-            LEARN1["📈 Continuous Improvement<br/>Policy optimization<br/>Automated refinement"]
-            LEARN2["🧩 Experience Integration<br/>Historical pattern learning<br/>Knowledge accumulation"]
-            LEARN3["🔄 Strategy Evolution<br/>Dynamic adaptation<br/>Context awareness"]
-            LEARN4["⚡ Performance Boost<br/>40% productivity gain<br/>95% faster decisions"]
+        subgraph "Learning Engine"
+            LEARN1["Continuous Improvement<br/>Policy optimization<br/>Automated refinement"]
+            LEARN2["Experience Integration<br/>Historical pattern learning<br/>Knowledge accumulation"]
+            LEARN3["Strategy Evolution<br/>Dynamic adaptation<br/>Context awareness"]
+            LEARN4["Performance Enhancement<br/>40% productivity gain<br/>95% faster decisions"]
         end
         
-        subgraph "💰 Economic Impact"
-            ECON1["📉 Cost Reduction<br/>💲 $2.3M per 1000-bed hospital<br/>23% operational savings"]
-            ECON2["📊 Efficiency Gains<br/>Process optimization<br/>Resource maximization"]
-            ECON3["🎯 ROI Maximization<br/>Investment returns<br/>Value creation"]
-            ECON4["💎 Competitive Edge<br/>Industry leadership<br/>Market differentiation"]
+        subgraph "Economic Impact"
+            ECON1["Cost Reduction<br/>$2.3M per 1000-bed hospital<br/>23% operational savings"]
+            ECON2["Efficiency Gains<br/>Process optimization<br/>Resource maximization"]
+            ECON3["ROI Maximization<br/>Investment returns<br/>Value creation"]
+            ECON4["Competitive Advantage<br/>Industry leadership<br/>Market differentiation"]
         end
         
-        subgraph "🛡️ Resilience Matrix"
-            RESILIENCE1["⚡ Rapid Recovery<br/>⏱️ 2.3 days vs 7+ days<br/>67% faster restoration"]
-            RESILIENCE2["🔒 Service Continuity<br/>📈 96.2% uptime maintained<br/>vs 89% traditional"]
-            RESILIENCE3["🌪️ Multi-Threat Defense<br/>🦠 Pandemic + 🌊 Natural disasters<br/>🔒 Cyber attacks"]
-            RESILIENCE4["🏗️ Adaptive Capacity<br/>Flexibility + Scalability<br/>Evolution capability"]
+        subgraph "Resilience Matrix"
+            RESILIENCE1["Rapid Recovery<br/>2.3 days vs 7+ days<br/>67% faster restoration"]
+            RESILIENCE2["Service Continuity<br/>96.2% uptime maintained<br/>vs 89% traditional"]
+            RESILIENCE3["Multi-Threat Defense<br/>Pandemic, Natural disasters<br/>Cyber attacks"]
+            RESILIENCE4["Adaptive Capacity<br/>Flexibility & Scalability<br/>Evolution capability"]
         end
         
-        subgraph "📊 Decision Excellence"
-            DECISION1["📈 Real-time Analytics<br/>Live dashboards<br/>Actionable intelligence"]
-            DECISION2["🔬 Statistical Validation<br/>Hypothesis testing<br/>Confidence intervals"]
-            DECISION3["📋 Performance Tracking<br/>KPI monitoring<br/>Benchmark comparison"]
-            DECISION4["⚖️ Comparative Analysis<br/>Agent benchmarking<br/>Best practice ID"]
+        subgraph "Decision Excellence"
+            DECISION1["Real-time Analytics<br/>Live dashboards<br/>Actionable intelligence"]
+            DECISION2["Statistical Validation<br/>Hypothesis testing<br/>Confidence intervals"]
+            DECISION3["Performance Tracking<br/>KPI monitoring<br/>Benchmark comparison"]
+            DECISION4["Comparative Analysis<br/>Agent benchmarking<br/>Best practice identification"]
         end
     end
     
@@ -816,13 +822,13 @@ graph TB
     ECON3 -.-> RESILIENCE2
     RESILIENCE3 -.-> DECISION2
     
-    classDef coreNode fill:#1E3A8A,stroke:#1E40AF,stroke-width:3px,color:#ffffff,font-weight:bold
-    classDef intelNode fill:#4C1D95,stroke:#5B21B6,stroke-width:2px,color:#ffffff
-    classDef causalNode fill:#065F46,stroke:#059669,stroke-width:2px,color:#ffffff
-    classDef learnNode fill:#7C2D12,stroke:#92400E,stroke-width:2px,color:#ffffff
-    classDef econNode fill:#8B5A2B,stroke:#A16207,stroke-width:2px,color:#ffffff
-    classDef resilienceNode fill:#164E63,stroke:#0891B2,stroke-width:2px,color:#ffffff
-    classDef decisionNode fill:#713F12,stroke:#A16207,stroke-width:2px,color:#ffffff
+    classDef coreNode fill:#002D9C,stroke:#001F6B,stroke-width:2px,color:#FFFFFF
+    classDef intelNode fill:#0F62FE,stroke:#0043CE,stroke-width:1.5px,color:#FFFFFF
+    classDef causalNode fill:#198038,stroke:#0E6027,stroke-width:1.5px,color:#FFFFFF
+    classDef learnNode fill:#8A3FFC,stroke:#6929C4,stroke-width:1.5px,color:#FFFFFF
+    classDef econNode fill:#FF832B,stroke:#D12771,stroke-width:1.5px,color:#FFFFFF
+    classDef resilienceNode fill:#005D5D,stroke:#004144,stroke-width:1.5px,color:#FFFFFF
+    classDef decisionNode fill:#B28600,stroke:#8E6A00,stroke-width:1.5px,color:#FFFFFF
     
     class CORE coreNode
     class INTEL1,INTEL2,INTEL3,INTEL4 intelNode
@@ -1201,21 +1207,23 @@ response protocols and reduces human coordination delays.
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#1E3A8A',
-    'primaryTextColor': '#374151',
-    'lineColor': '#065F46',
-    'background': '#F9FAFB',
-    'mainBkg': '#FFFFFF'
+    'primaryColor': '#002D9C',
+    'primaryTextColor': '#161616',
+    'lineColor': '#525252',
+    'background': '#FFFFFF',
+    'mainBkg': '#F4F4F4',
+    'fontFamily': 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+    'fontSize': '12px'
   }
 }}%%
 xychart-beta
     title "Agent Performance Over Real Data Training Episodes"
     x-axis [Episode-1, Episode-10, Episode-25, Episode-50, Episode-100]
     y-axis "Success Rate %" 0 --> 100
-    line "🧠 CRL Agent" [45, 62, 78, 89, 94]
-    line "📊 Deterministic" [71, 71, 71, 71, 71]  
-    line "⚡ Pure RL" [25, 35, 52, 68, 78]
-    line "💡 Causal Heuristic" [82, 82, 82, 82, 82]
+    line "CRL Agent" [45, 62, 78, 89, 94]
+    line "Deterministic" [71, 71, 71, 71, 71]  
+    line "Pure RL" [25, 35, 52, 68, 78]
+    line "Causal Heuristic" [82, 82, 82, 82, 82]
 ```
 
 ### **🏥 Healthcare Industry Benchmarks** (Real Data Validation)
@@ -1438,24 +1446,27 @@ human bottlenecks and dramatically improve response effectiveness.
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#1E3A8A',
+    'primaryColor': '#002D9C',
     'primaryTextColor': '#FFFFFF',
-    'primaryBorderColor': '#1E40AF',
-    'lineColor': '#374151',
-    'secondaryColor': '#065F46',
-    'tertiaryColor': '#7C2D12',
-    'background': '#F9FAFB',
-    'mainBkg': '#FFFFFF',
-    'secondBkg': '#F3F4F6'
+    'primaryBorderColor': '#001F6B',
+    'lineColor': '#4F4F4F',
+    'secondaryColor': '#0F62FE',
+    'tertiaryColor': '#198038',
+    'background': '#FFFFFF',
+    'mainBkg': '#F4F4F4',
+    'secondBkg': '#E0E0E0',
+    'fontFamily': 'IBM Plex Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+    'fontSize': '14px',
+    'fontWeight': '400'
   }
 }}%%
 flowchart TD
-    A["📊 Supplier Reliability<br/>87.4% average"] --> B["📈 Service Level<br/>96.2% maintained"]
-    C["⏱️ Lead Time<br/>45 days average"] --> D["📦 Safety Stock<br/>Dynamic optimization"]
-    E["💰 Freight Cost<br/>$70K average"] --> F["🚛 Route Selection<br/>Multi-modal options"]
-    G["🌪️ Disruption Severity<br/>0.7 hurricane scale"] --> H["⚡ Recovery Time<br/>2.0 episodes"]
-    I["🏥 Healthcare Compliance<br/>98.3% achieved"] --> B
-    J["📍 Geographic Risk<br/>Regional weighting"] --> G
+    A["Supplier Reliability<br/>87.4% average"] --> B["Service Level<br/>96.2% maintained"]
+    C["Lead Time<br/>45 days average"] --> D["Safety Stock<br/>Dynamic optimization"]
+    E["Freight Cost<br/>$70K average"] --> F["Route Selection<br/>Multi-modal options"]
+    G["Disruption Severity<br/>0.7 hurricane scale"] --> H["Recovery Time<br/>2.0 episodes"]
+    I["Healthcare Compliance<br/>98.3% achieved"] --> B
+    J["Geographic Risk<br/>Regional weighting"] --> G
     
     A --> D
     C --> B
@@ -1463,9 +1474,9 @@ flowchart TD
     G --> D
     I --> D
     
-    classDef inputStyle fill:#1E3A8A,stroke:#1E40AF,stroke-width:2px,color:#FFFFFF
-    classDef outputStyle fill:#065F46,stroke:#059669,stroke-width:2px,color:#FFFFFF
-    classDef intermediateStyle fill:#7C2D12,stroke:#92400E,stroke-width:2px,color:#FFFFFF
+    classDef inputStyle fill:#002D9C,stroke:#001F6B,stroke-width:1.5px,color:#FFFFFF
+    classDef outputStyle fill:#198038,stroke:#0E6027,stroke-width:1.5px,color:#FFFFFF
+    classDef intermediateStyle fill:#0F62FE,stroke:#0043CE,stroke-width:1.5px,color:#FFFFFF
     
     class A,C,E,G,I,J inputStyle
     class B,H outputStyle
