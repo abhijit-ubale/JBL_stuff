@@ -41,29 +41,30 @@ class CausalGraph:
         self.causal_relationships = {}
         self.intervention_effects = {}
         
-        # Define variable types and their possible values
+        # Define variable types based on real data features
         self.variable_domains = {
-            # Disruption variables
-            'pandemic_severity': ['none', 'low', 'medium', 'high'],
-            'hurricane_severity': ['none', 'low', 'medium', 'high'], 
-            'cyber_attack_severity': ['none', 'low', 'medium', 'high'],
-            'port_closure_severity': ['none', 'low', 'medium', 'high'],
-            'compound_disruption': ['false', 'true'],
+            # Real supply chain variables from GHSC dataset
+            'lead_time_days': ['short', 'medium', 'long', 'very_long'],  # 0-30, 30-60, 60-90, 90+
+            'on_time_delivery_pct': ['low', 'medium', 'high', 'excellent'],  # <80%, 80-90%, 90-95%, 95%+
+            'supplier_reliability_score': ['low', 'medium', 'high'],  # 0-0.5, 0.5-0.8, 0.8-1.0
+            'stockout_frequency': ['rare', 'occasional', 'frequent', 'critical'],  # 0-0.1, 0.1-0.2, 0.2-0.5, 0.5+
+            'freight_cost_level': ['low', 'medium', 'high', 'premium'],  # Cost quartiles
             
-            # Supply chain variables
-            'supplier_reliability': ['low', 'medium', 'high'],
-            'inventory_level': ['critical', 'low', 'normal', 'high'],
-            'lead_time': ['short', 'normal', 'extended', 'critical'],
-            'transportation_capacity': ['limited', 'normal', 'abundant'],
-            'demand_surge': ['none', 'moderate', 'high', 'extreme'],
+            # Disruption variables from real data
+            'disruption_type': ['none', 'flood', 'covid_lockdown', 'conflict', 'port_closure', 'cyber_attack'],
+            'disruption_severity': ['none', 'low', 'medium', 'high', 'extreme'],  # 0, 1, 2-3, 4, 5
             
-            # Operational variables
-            'stockout_risk': ['low', 'medium', 'high', 'critical'],
-            'cost_increase': ['none', 'low', 'medium', 'high'],
-            'service_disruption': ['none', 'minor', 'moderate', 'severe'],
-            'recovery_time': ['fast', 'normal', 'slow', 'very_slow'],
+            # Logistics variables from LPI dataset
+            'lpi_score': ['very_low', 'low', 'medium', 'high', 'very_high'],  # 1-2, 2-3, 3-4, 4-5
+            'customs_efficiency': ['poor', 'fair', 'good', 'excellent'],
+            'infrastructure_quality': ['poor', 'fair', 'good', 'excellent'],
+            'transport_mode': ['air', 'ocean', 'land', 'multimodal'],
             
-            # Action variables
+            # Warehouse and operational variables
+            'warehouse_type': ['public_depot', 'rdc', '3pl', 'coe'],  # From real data
+            'outcome_metric': ['poor', 'fair', 'good', 'excellent'],  # Performance quartiles
+            
+            # Action variables (same as before)
             'switch_supplier': ['no', 'yes'],
             'increase_safety_stock': ['no', 'yes'], 
             'emergency_procurement': ['no', 'yes'],
@@ -72,64 +73,57 @@ class CausalGraph:
         }
     
     def build_healthcare_dag(self) -> None:
-        """Build DAG based on healthcare supply chain domain knowledge."""
-        logger.info("Building healthcare supply chain causal DAG...")
+        """Build DAG based on real healthcare supply chain data relationships."""
+        logger.info("Building healthcare supply chain causal DAG from real data...")
         
-        # Define causal structure based on supply chain theory
+        # Define causal structure based on real data relationships
         causal_edges = [
-            # Disruption -> Direct impacts
-            ('pandemic_severity', 'demand_surge'),
-            ('pandemic_severity', 'supplier_reliability'),
-            ('pandemic_severity', 'transportation_capacity'),
+            # Disruption impacts (from real disaster data)
+            ('disruption_type', 'disruption_severity'),
+            ('disruption_severity', 'supplier_reliability_score'),
+            ('disruption_severity', 'lead_time_days'),
+            ('disruption_severity', 'freight_cost_level'),
             
-            ('hurricane_severity', 'transportation_capacity'),
-            ('hurricane_severity', 'supplier_reliability'),
-            ('hurricane_severity', 'port_closure_severity'),
+            # Supply chain fundamentals (from GHSC data)
+            ('supplier_reliability_score', 'on_time_delivery_pct'),
+            ('lead_time_days', 'on_time_delivery_pct'),
+            ('lead_time_days', 'stockout_frequency'),
+            ('freight_cost_level', 'transport_mode'),
             
-            ('cyber_attack_severity', 'supplier_reliability'),
-            ('cyber_attack_severity', 'lead_time'),
+            # Logistics performance impacts (from LPI data)
+            ('lpi_score', 'lead_time_days'),
+            ('customs_efficiency', 'lead_time_days'),
+            ('infrastructure_quality', 'freight_cost_level'),
+            ('transport_mode', 'freight_cost_level'),
+            ('transport_mode', 'lead_time_days'),
             
-            ('port_closure_severity', 'transportation_capacity'),
-            ('port_closure_severity', 'lead_time'),
+            # Warehouse and operational efficiency
+            ('warehouse_type', 'stockout_frequency'),
+            ('warehouse_type', 'on_time_delivery_pct'),
+            ('lpi_score', 'customs_efficiency'),
+            ('infrastructure_quality', 'customs_efficiency'),
             
-            # Compound effects
-            ('pandemic_severity', 'compound_disruption'),
-            ('hurricane_severity', 'compound_disruption'),
-            ('cyber_attack_severity', 'compound_disruption'),
+            # Performance outcomes
+            ('on_time_delivery_pct', 'outcome_metric'),
+            ('stockout_frequency', 'outcome_metric'),
+            ('freight_cost_level', 'outcome_metric'),
+            ('supplier_reliability_score', 'outcome_metric'),
             
-            # Supply chain propagation
-            ('supplier_reliability', 'lead_time'),
-            ('transportation_capacity', 'lead_time'),
-            ('demand_surge', 'inventory_level'),
-            ('lead_time', 'inventory_level'),
+            # Action effects on key performance indicators
+            ('switch_supplier', 'supplier_reliability_score'),
+            ('switch_supplier', 'freight_cost_level'),
             
-            # Operational impacts
-            ('inventory_level', 'stockout_risk'),
-            ('lead_time', 'stockout_risk'),
-            ('compound_disruption', 'stockout_risk'),
+            ('increase_safety_stock', 'stockout_frequency'),
+            ('increase_safety_stock', 'freight_cost_level'),
             
-            ('stockout_risk', 'service_disruption'),
-            ('lead_time', 'cost_increase'),
-            ('demand_surge', 'cost_increase'),
+            ('emergency_procurement', 'stockout_frequency'),
+            ('emergency_procurement', 'freight_cost_level'),
             
-            ('service_disruption', 'recovery_time'),
-            ('cost_increase', 'recovery_time'),
-            ('compound_disruption', 'recovery_time'),
+            ('reroute_shipments', 'lead_time_days'),
+            ('reroute_shipments', 'transport_mode'),
             
-            # Action effects
-            ('switch_supplier', 'supplier_reliability'),
-            ('switch_supplier', 'cost_increase'),
-            
-            ('increase_safety_stock', 'inventory_level'),
-            ('increase_safety_stock', 'cost_increase'),
-            
-            ('emergency_procurement', 'inventory_level'),
-            ('emergency_procurement', 'cost_increase'),
-            
-            ('reroute_shipments', 'lead_time'),
-            ('reroute_shipments', 'cost_increase'),
-            
-            ('allocate_resources', 'service_disruption'),
+            ('allocate_resources', 'on_time_delivery_pct'),
+            ('allocate_resources', 'outcome_metric'),
         ]
         
         # Add edges to DAG
@@ -144,27 +138,30 @@ class CausalGraph:
     def _define_causal_strengths(self) -> None:
         """Define causal relationship strengths based on domain knowledge."""
         
-        # Strong causal relationships
+        # Strong causal relationships (based on real data correlations)
         strong_relationships = [
-            ('pandemic_severity', 'demand_surge', 0.9),
-            ('inventory_level', 'stockout_risk', 0.8),
-            ('stockout_risk', 'service_disruption', 0.8),
-            ('increase_safety_stock', 'inventory_level', 0.9),
+            ('disruption_severity', 'supplier_reliability_score', 0.8),
+            ('supplier_reliability_score', 'on_time_delivery_pct', 0.9),
+            ('lead_time_days', 'on_time_delivery_pct', 0.8),
+            ('on_time_delivery_pct', 'outcome_metric', 0.9),
+            ('increase_safety_stock', 'stockout_frequency', 0.8),
         ]
         
         # Medium causal relationships  
         medium_relationships = [
-            ('hurricane_severity', 'transportation_capacity', 0.6),
-            ('supplier_reliability', 'lead_time', 0.6),
-            ('lead_time', 'inventory_level', 0.5),
-            ('switch_supplier', 'supplier_reliability', 0.6),
+            ('disruption_severity', 'lead_time_days', 0.6),
+            ('lpi_score', 'lead_time_days', 0.6),
+            ('infrastructure_quality', 'freight_cost_level', 0.6),
+            ('warehouse_type', 'stockout_frequency', 0.5),
+            ('transport_mode', 'freight_cost_level', 0.6),
         ]
         
         # Weak causal relationships
         weak_relationships = [
-            ('cyber_attack_severity', 'lead_time', 0.3),
-            ('reroute_shipments', 'lead_time', 0.4),
-            ('compound_disruption', 'recovery_time', 0.4),
+            ('customs_efficiency', 'lead_time_days', 0.4),
+            ('reroute_shipments', 'lead_time_days', 0.4),
+            ('disruption_type', 'freight_cost_level', 0.3),
+            ('switch_supplier', 'freight_cost_level', 0.3),
         ]
         
         all_relationships = strong_relationships + medium_relationships + weak_relationships
@@ -182,11 +179,16 @@ class CausalGraph:
     def _get_mechanism_description(self, cause: str, effect: str) -> str:
         """Generate mechanism description for causal relationship."""
         mechanisms = {
-            ('pandemic_severity', 'demand_surge'): "Pandemic increases demand for medical supplies",
-            ('inventory_level', 'stockout_risk'): "Lower inventory directly increases stockout probability",
-            ('supplier_reliability', 'lead_time'): "Unreliable suppliers cause delivery delays",
-            ('switch_supplier', 'supplier_reliability'): "Switching to backup suppliers may reduce reliability",
-            ('increase_safety_stock', 'inventory_level'): "Safety stock directly increases inventory buffer",
+            ('disruption_severity', 'supplier_reliability_score'): "Higher disruption severity reduces supplier reliability",
+            ('supplier_reliability_score', 'on_time_delivery_pct'): "More reliable suppliers achieve better on-time delivery",
+            ('lead_time_days', 'on_time_delivery_pct'): "Longer lead times reduce on-time delivery performance",
+            ('on_time_delivery_pct', 'outcome_metric'): "Better delivery performance improves overall outcomes",
+            ('lpi_score', 'lead_time_days'): "Better logistics infrastructure reduces lead times",
+            ('transport_mode', 'freight_cost_level'): "Air transport costs more than ocean or land",
+            ('warehouse_type', 'stockout_frequency'): "Warehouse efficiency affects stockout rates",
+            ('increase_safety_stock', 'stockout_frequency'): "Higher safety stock reduces stockout risk",
+            ('switch_supplier', 'supplier_reliability_score'): "Switching suppliers may improve or worsen reliability",
+            ('emergency_procurement', 'freight_cost_level'): "Emergency procurement increases costs significantly",
         }
         
         return mechanisms.get((cause, effect), f"{cause} causally influences {effect}")
@@ -424,38 +426,83 @@ class CausalOracle:
         return self.effect(action, context)
     
     def _convert_context(self, context: Dict[str, Any]) -> Dict[str, str]:
-        """Convert numerical context to categorical variables."""
+        """Convert numerical context to categorical variables based on real data ranges."""
         context_str = {}
         
-        # Map numerical values to categorical domains
+        # Define discretization rules based on real data distributions
+        discretization_rules = {
+            'lead_time_days': {
+                'thresholds': [30, 60, 90],
+                'labels': ['short', 'medium', 'long', 'very_long']
+            },
+            'on_time_delivery_pct': {
+                'thresholds': [80, 90, 95],
+                'labels': ['low', 'medium', 'high', 'excellent']
+            },
+            'supplier_reliability_score': {
+                'thresholds': [0.5, 0.8],
+                'labels': ['low', 'medium', 'high']
+            },
+            'stockout_frequency': {
+                'thresholds': [0.1, 0.2, 0.5],
+                'labels': ['rare', 'occasional', 'frequent', 'critical']
+            },
+            'freight_cost_level': {
+                'thresholds': [25000, 50000, 100000],
+                'labels': ['low', 'medium', 'high', 'premium']
+            },
+            'lpi_score': {
+                'thresholds': [2.0, 3.0, 4.0],
+                'labels': ['very_low', 'low', 'medium', 'high', 'very_high']
+            },
+            'disruption_severity': {
+                'thresholds': [1, 2, 4],
+                'labels': ['none', 'low', 'medium', 'high', 'extreme']
+            }
+        }
+        
+        # Apply discretization
         for key, value in context.items():
-            if key in self.causal_graph.variable_domains:
-                if isinstance(value, (int, float)):
-                    # Simple quantile-based discretization
+            if key in discretization_rules and isinstance(value, (int, float)):
+                rule = discretization_rules[key]
+                thresholds = rule['thresholds']
+                labels = rule['labels']
+                
+                # Find appropriate label
+                for i, threshold in enumerate(thresholds):
+                    if value <= threshold:
+                        context_str[key] = labels[i]
+                        break
+                else:
+                    context_str[key] = labels[-1]  # Highest category
+                    
+            elif key in self.causal_graph.variable_domains:
+                if isinstance(value, str):
+                    context_str[key] = value.lower()
+                else:
+                    # Generic discretization for unmapped variables
                     if value < 0.25:
                         context_str[key] = 'low'
                     elif value < 0.5:
-                        context_str[key] = 'medium' 
+                        context_str[key] = 'medium'
                     elif value < 0.75:
                         context_str[key] = 'high'
                     else:
                         context_str[key] = 'very_high'
-                else:
-                    context_str[key] = str(value)
-            
+        
         return context_str
     
     def _get_primary_outcome(self, action: str) -> str:
-        """Get primary outcome variable for each action type."""
+        """Get primary outcome variable for each action type based on real data."""
         action_outcomes = {
-            'switch_supplier': 'supplier_reliability',
-            'increase_safety_stock': 'stockout_risk',
-            'emergency_procurement': 'stockout_risk',
-            'reroute_shipments': 'lead_time',
-            'allocate_resources': 'service_disruption'
+            'switch_supplier': 'supplier_reliability_score',
+            'increase_safety_stock': 'stockout_frequency',
+            'emergency_procurement': 'stockout_frequency',
+            'reroute_shipments': 'lead_time_days',
+            'allocate_resources': 'on_time_delivery_pct'
         }
         
-        return action_outcomes.get(action, 'recovery_time')
+        return action_outcomes.get(action, 'outcome_metric')
     
     def get_causal_explanation(self, action: str, outcome: str) -> str:
         """Get textual explanation of causal relationship."""

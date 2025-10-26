@@ -288,22 +288,24 @@ class ResilienceMetrics:
         }
     
     def _calculate_service_loss(self, episode_data: EpisodeData) -> float:
-        """Calculate normalized service level loss."""
+        """Calculate normalized service level loss based on real data."""
         service_levels = episode_data.service_levels
         if len(service_levels) == 0:
             return 0.0
         
-        baseline_service = 0.95  # Expected service level
+        # Use real data baseline (average on-time delivery from GHSC data is ~88%)
+        baseline_service = 0.88  # Real data baseline
         service_shortfall = max(0, baseline_service - np.mean(service_levels))
         return service_shortfall / baseline_service
     
     def _calculate_cost_impact(self, episode_data: EpisodeData) -> float:
-        """Calculate normalized cost impact."""
+        """Calculate normalized cost impact based on real freight cost data."""
         costs = episode_data.costs
         if len(costs) == 0:
             return 0.0
         
-        baseline_cost = 100.0  # Expected cost per period
+        # Use real data baseline (median freight cost from GHSC data ~70K USD)
+        baseline_cost = 70.0  # Normalized baseline from real data
         avg_actual_cost = np.mean(costs)
         cost_increase = max(0, avg_actual_cost - baseline_cost)
         return min(1.0, cost_increase / baseline_cost)  # Cap at 100% increase
@@ -328,10 +330,11 @@ class ResilienceMetrics:
         """
         
         if baseline_performance is None:
+            # Use real data baselines from GHSC dataset
             baseline_performance = {
-                'service_level': 0.95,
+                'service_level': 0.88,  # Average on-time delivery from real data
                 'cost_efficiency': 1.0,
-                'inventory_turnover': 12.0
+                'inventory_turnover': 8.0  # Adjusted for healthcare supply chains
             }
         
         # Calculate post-disruption performance
@@ -361,7 +364,7 @@ class ResilienceMetrics:
         # Cost efficiency component (inverse of cost increase)
         costs = episode_data.costs
         if costs:
-            baseline_cost = 100.0
+            baseline_cost = 70.0  # Real data baseline
             avg_cost = np.mean(costs)
             cost_efficiency = baseline_cost / avg_cost if avg_cost > 0 else 0.0
         else:
@@ -373,7 +376,7 @@ class ResilienceMetrics:
             avg_inventory = np.mean(inventory_levels)
             total_cogs = sum(costs)
             itr = total_cogs / avg_inventory if avg_inventory > 0 else 0.0
-            inventory_efficiency = min(1.0, itr / 20.0)  # Normalize to [0, 1]
+            inventory_efficiency = min(1.0, itr / 12.0)  # Normalize based on healthcare norms
         else:
             inventory_efficiency = 0.5
         

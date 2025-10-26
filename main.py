@@ -25,7 +25,7 @@ sys.path.append(str(Path(__file__).parent / 'src'))
 
 try:
     # Import framework components
-    from data_pipeline import HealthcareDataPipeline
+    from data_pipeline import RealDataPipeline
     from causal_graph import create_healthcare_causal_model, CausalOracle
     from crl_agent import CausalRLAgent, MultiAgentCRL
     from baselines import BaselineAgents
@@ -50,22 +50,23 @@ logger = logging.getLogger(__name__)
 
 class HealthcareCRLEnvironment:
     """
-    Simplified healthcare supply chain environment for CRL experiments.
-    This is a mock environment - in full implementation, this would be
-    a complete gymnasium environment.
+    Real data healthcare supply chain environment for CRL experiments.
+    Uses actual supply chain, logistics, and disaster data from CSV files.
     """
     
     def __init__(self, config: Dict[str, Any]):
         """Initialize environment from configuration."""
         self.config = config
-        self.num_hospitals = config.get('num_hospitals', 50)
-        self.num_suppliers = config.get('num_suppliers', 25)
         self.episode_length = config.get('episode_length', 50)
         self.disruption_types = config.get('disruption_types', ['pandemic'])
         
-        # State and action space dimensions
-        self.state_size = 20  # Multi-dimensional state representation
-        self.action_size = 6  # 5 actions + no-action
+        # Initialize real data pipeline
+        data_splits_path = config.get('data_splits_path', 'DATA_SPLITS')
+        self.data_pipeline = RealDataPipeline(data_splits_path)
+        
+        # State and action space dimensions from real data
+        self.state_size = self.data_pipeline.get_state_dimension()  # Real feature vector size
+        self.action_size = self.data_pipeline.get_action_space_size()  # 6 actions
         
         # Environment state
         self.current_step = 0
@@ -73,41 +74,47 @@ class HealthcareCRLEnvironment:
         self.disruption_active = False
         self.disruption_severity = 0.0
         
+        # Real data for episode simulation
+        self.episode_records = []
+        self.current_record_index = 0
+        
         # Performance tracking
         self.episode_data = None
         
-        logger.info(f"Initialized environment with {self.num_hospitals} hospitals, "
-                   f"{self.num_suppliers} suppliers")
+        # Get dataset statistics
+        stats = self.data_pipeline.get_dataset_statistics()
+        total_records = sum(stat.get('num_records', 0) for stat in stats.values())
+        
+        logger.info(f"Initialized environment with real data pipeline")
+        logger.info(f"Total records across all datasets: {total_records}")
+        logger.info(f"State dimension: {self.state_size}, Action dimension: {self.action_size}")
     
     def reset(self) -> np.ndarray:
-        """Reset environment for new episode."""
+        """Reset environment for new episode using real data."""
         self.current_step = 0
         self.disruption_active = False
         self.disruption_severity = 0.0
+        self.current_record_index = 0
         
-        # Initialize state [service_level, inventory_level, lead_time, supplier_reliability, ...]
-        self.current_state = np.array([
-            0.95,  # service_level
-            0.8,   # inventory_level  
-            0.3,   # lead_time
-            0.9,   # supplier_reliability
-            0.2,   # cost_pressure
-            0.0,   # pandemic_severity
-            0.0,   # hurricane_severity
-            0.0,   # cyber_attack_severity
-            0.0,   # port_closure_severity
-            0.0,   # compound_disruption
-            0.8,   # transportation_capacity
-            0.1,   # stockout_risk
-            0.1,   # demand_surge
-            0.2,   # cost_increase
-            0.95,  # quality_compliance
-            12.0,  # inventory_turnover (normalized)
-            0.0,   # service_disruption
-            0.0,   # recovery_progress
-            0.8,   # digital_responsiveness
-            0.6    # sustainability_score
-        ])
+        # Sample episode data from real datasets
+        try:
+            self.episode_records = self.data_pipeline.sample_episode_data(
+                mode='train', 
+                episode_length=self.episode_length
+            )
+        except Exception as e:
+            logger.error(f"Error sampling episode data: {e}")
+            # Fallback to default state
+            self.episode_records = [{'step': i, 'episode_progress': i/self.episode_length} 
+                                  for i in range(self.episode_length)]
+        
+        # Get initial state from first record
+        if self.episode_records:
+            initial_record = self.episode_records[0]
+            self.current_state = self.data_pipeline.get_feature_vector_for_state(initial_record)
+        else:
+            # Fallback state
+            self.current_state = np.zeros(self.state_size)
         
         # Initialize episode data collection
         self.episode_data = {
@@ -115,10 +122,10 @@ class HealthcareCRLEnvironment:
             'actions': [],
             'rewards': [],
             'costs': [100.0],  # baseline cost
-            'service_levels': [0.95],
-            'inventory_levels': [0.8],
+            'service_levels': [self.current_state[1] if len(self.current_state) > 1 else 0.95],
+            'inventory_levels': [self.current_state[0] if len(self.current_state) > 0 else 0.8],
             'supplier_performances': [{
-                'on_time_delivery': 0.9,
+                'on_time_delivery': self.current_state[2] if len(self.current_state) > 2 else 0.9,
                 'quality_compliance': 0.95,
                 'response_time_score': 0.8
             }],
@@ -130,13 +137,29 @@ class HealthcareCRLEnvironment:
     def step(self, action: int) -> tuple:
         """Execute action and return next state, reward, done, info."""
         self.current_step += 1
+        self.current_record_index = min(self.current_record_index + 1, len(self.episode_records) - 1)
         
-        # Simulate disruption events (random timing)
-        if not self.disruption_active and np.random.rand() < 0.1:  # 10% chance per step
-            self._trigger_disruption()
+        # Get next state from real data record
+        if self.current_record_index < len(self.episode_records):
+            current_record = self.episode_records[self.current_record_index]
+            
+            # Check for disruptions in the data
+            disruption_type = current_record.get('Disruption_Type', 'None')
+            if disruption_type and disruption_type != 'None':
+                self.disruption_active = True
+                self.disruption_severity = current_record.get('Disruption_Severity', 0) / 5.0  # Normalize
+            else:
+                self.disruption_active = False
+                self.disruption_severity = 0.0
+            
+            # Get state from real data
+            next_state = self.data_pipeline.get_feature_vector_for_state(current_record)
+        else:
+            # Use last available state if we run out of records
+            next_state = self.current_state.copy()
         
-        # Apply action effects
-        next_state, reward, cost = self._apply_action(action)
+        # Apply action effects to the state
+        next_state, reward, cost = self._apply_action_to_real_state(action, next_state, current_record)
         
         # Update state
         self.current_state = next_state
@@ -145,7 +168,7 @@ class HealthcareCRLEnvironment:
         done = self.current_step >= self.episode_length
         
         # Create context for causal oracle
-        context = self._get_context()
+        context = self._get_context_from_real_data(current_record)
         
         # Store step data
         self.episode_data['states'].append(next_state.copy())
@@ -155,95 +178,99 @@ class HealthcareCRLEnvironment:
         })
         self.episode_data['rewards'].append(reward)
         self.episode_data['costs'].append(cost)
-        self.episode_data['service_levels'].append(next_state[0])
-        self.episode_data['inventory_levels'].append(next_state[1])
+        self.episode_data['service_levels'].append(next_state[1] if len(next_state) > 1 else 0.5)
+        self.episode_data['inventory_levels'].append(next_state[0] if len(next_state) > 0 else 0.5)
         
         info = {
             'context': context,
             'disruption_active': self.disruption_active,
-            'step': self.current_step
+            'step': self.current_step,
+            'real_data_record': current_record
         }
         
         return next_state.copy(), reward, done, info
     
-    def _trigger_disruption(self):
-        """Trigger a random disruption event."""
-        disruption_type = np.random.choice(self.disruption_types)
-        self.disruption_severity = np.random.uniform(0.3, 0.9)
-        self.disruption_active = True
-        
-        # Update state based on disruption type
-        if disruption_type == 'pandemic':
-            self.current_state[5] = self.disruption_severity  # pandemic_severity
-            self.current_state[12] = min(1.0, self.disruption_severity * 0.8)  # demand_surge
-            self.current_state[3] *= (1 - self.disruption_severity * 0.3)  # supplier_reliability
-        elif disruption_type == 'hurricane':
-            self.current_state[6] = self.disruption_severity  # hurricane_severity
-            self.current_state[10] *= (1 - self.disruption_severity * 0.4)  # transportation_capacity
-        elif disruption_type == 'cyber_attack':
-            self.current_state[7] = self.disruption_severity  # cyber_attack_severity
-            self.current_state[2] *= (1 + self.disruption_severity * 0.5)  # lead_time
-        
-        self.episode_data['disruption_events'].append({
-            'type': disruption_type,
-            'severity': self.disruption_severity,
-            'step': self.current_step
-        })
-        
-        logger.info(f"Triggered {disruption_type} disruption at step {self.current_step} "
-                   f"with severity {self.disruption_severity:.2f}")
-    
-    def _apply_action(self, action: int) -> tuple:
-        """Apply action and compute next state and reward."""
-        next_state = self.current_state.copy()
+    def _apply_action_to_real_state(self, action: int, state: np.ndarray, record: Dict[str, Any]) -> tuple:
+        """Apply action effects to real data-based state."""
+        next_state = state.copy()
         base_reward = 1.0
-        base_cost = 100.0
         
-        # Action effects on state
+        # Extract base cost from real data
+        base_cost = record.get('Freight_Cost_USD', 100.0) / 1000.0  # Normalize
+        
+        # Action effects based on real supply chain principles
         if action == 0:  # switch_supplier
-            next_state[3] = min(1.0, next_state[3] + 0.1)  # improve supplier_reliability
-            base_cost *= 1.2  # increased cost
+            # Improve supplier reliability but increase cost
+            if len(next_state) > 2:
+                next_state[2] = min(1.0, next_state[2] + 0.1)  # supplier_reliability
+            base_cost *= 1.2
             
         elif action == 1:  # increase_safety_stock
-            next_state[1] = min(1.0, next_state[1] + 0.15)  # increase inventory_level
-            next_state[11] = max(0.0, next_state[11] - 0.1)  # reduce stockout_risk
-            base_cost *= 1.3  # inventory holding cost
+            # Improve inventory position, reduce stockout risk
+            if len(next_state) > 0:
+                next_state[0] = min(1.0, next_state[0] + 0.15)  # inventory proxy
+            base_cost *= 1.3
             
         elif action == 2:  # emergency_procurement
-            next_state[1] = min(1.0, next_state[1] + 0.2)  # increase inventory_level
-            next_state[11] = max(0.0, next_state[11] - 0.15)  # reduce stockout_risk
-            base_cost *= 1.5  # premium procurement cost
+            # Significant inventory improvement at high cost
+            if len(next_state) > 0:
+                next_state[0] = min(1.0, next_state[0] + 0.2)
+            base_cost *= 1.5
             
         elif action == 3:  # reroute_shipments
-            next_state[2] = max(0.1, next_state[2] - 0.1)  # reduce lead_time
-            base_cost *= 1.1  # routing cost
+            # Reduce lead time indicator
+            if len(next_state) > 0:
+                next_state[0] = min(1.0, next_state[0] + 0.1)  # Improve lead time proxy
+            base_cost *= 1.1
             
         elif action == 4:  # allocate_resources
-            next_state[0] = min(1.0, next_state[0] + 0.05)  # improve service_level
-            next_state[16] = max(0.0, next_state[16] - 0.1)  # reduce service_disruption
-            
-        # No action (action == 5) has no direct effects
+            # Improve overall service level
+            if len(next_state) > 1:
+                next_state[1] = min(1.0, next_state[1] + 0.05)  # service level proxy
         
-        # Natural state evolution and disruption effects
-        if self.disruption_active:
-            # Degradation during disruption
-            next_state[0] *= 0.98  # service_level degradation
-            next_state[1] *= 0.95  # inventory depletion
-            next_state[11] = min(1.0, next_state[11] + 0.05)  # increasing stockout_risk
-            
-            # Recovery progress
-            if np.random.rand() < 0.3:  # 30% chance to start recovery
-                self.disruption_active = False
-                next_state[17] = min(1.0, next_state[17] + 0.2)  # recovery_progress
+        # Apply disruption effects if present
+        disruption_severity = record.get('Disruption_Severity', 0) / 5.0
+        if disruption_severity > 0:
+            # Degrade performance during disruptions
+            next_state = next_state * (1 - disruption_severity * 0.1)
         
-        # Compute reward based on performance
-        service_reward = next_state[0] - 0.95  # penalty for service below baseline
-        cost_penalty = -abs(base_cost - 100.0) / 100.0  # cost increase penalty
-        stockout_penalty = -next_state[11] * 2.0  # stockout risk penalty
+        # Calculate reward based on real performance indicators
+        on_time_delivery = record.get('On_Time_Delivery_%', 90) / 100.0
+        outcome_metric = record.get('Outcome_Metric', 0.5)
         
-        reward = base_reward + service_reward + cost_penalty + stockout_penalty
+        # Reward components
+        delivery_reward = (on_time_delivery - 0.9) * 2.0  # Reward for above 90% OTD
+        outcome_reward = (outcome_metric - 0.5) * 2.0  # Reward for above median outcome
+        cost_penalty = -min((base_cost - 100.0) / 100.0, 1.0)  # Cost penalty
+        disruption_penalty = -disruption_severity * 0.5  # Disruption penalty
+        
+        reward = base_reward + delivery_reward + outcome_reward + cost_penalty + disruption_penalty
         
         return next_state, reward, base_cost
+    
+    def _get_context_from_real_data(self, record: Dict[str, Any]) -> Dict[str, float]:
+        """Extract context from real data record for causal oracle."""
+        context = {}
+        
+        # Map real data fields to context variables
+        context['supplier_reliability'] = record.get('Supplier_Reliability_Score', 0.5)
+        context['lead_time'] = min(record.get('Lead_Time_Days', 30) / 100.0, 1.0)  # Normalize
+        context['on_time_delivery'] = record.get('On_Time_Delivery_%', 90) / 100.0
+        context['freight_cost'] = min(record.get('Freight_Cost_USD', 50000) / 100000.0, 1.0)  # Normalize
+        context['stockout_frequency'] = record.get('Stockout_Frequency_per_Year', 0.1)
+        
+        # Disruption context
+        disruption_type = record.get('Disruption_Type', 'None')
+        context['pandemic_severity'] = 0.8 if 'COVID' in str(disruption_type) else 0.0
+        context['hurricane_severity'] = 0.7 if 'Flood' in str(disruption_type) else 0.0
+        context['cyber_attack_severity'] = 0.6 if 'Cyber' in str(disruption_type) else 0.0
+        context['port_closure_severity'] = 0.5 if 'Port' in str(disruption_type) else 0.0
+        
+        # Logistics context
+        context['transport_mode'] = record.get('Transport_Mode', 'Air')
+        context['warehouse_type'] = record.get('Warehouse_Type', 'RDC')
+        
+        return context
     
     def _action_to_name(self, action: int) -> str:
         """Convert action index to name."""
@@ -258,18 +285,32 @@ class HealthcareCRLEnvironment:
         return action_names.get(action, 'unknown')
     
     def _get_context(self) -> Dict[str, float]:
-        """Get context dictionary for causal oracle."""
-        return {
-            'pandemic_severity': self.current_state[5],
-            'hurricane_severity': self.current_state[6],
-            'cyber_attack_severity': self.current_state[7],
-            'supplier_reliability': self.current_state[3],
-            'inventory_level': self.current_state[1],
-            'service_level': self.current_state[0],
-            'stockout_risk': self.current_state[11],
-            'lead_time': self.current_state[2],
-            'transportation_capacity': self.current_state[10]
-        }
+        """Get context dictionary for causal oracle from current state."""
+        context = {}
+        
+        # Map state vector indices to context variables
+        if len(self.current_state) >= 20:
+            context['lead_time'] = self.current_state[0]
+            context['service_level'] = self.current_state[1] 
+            context['supplier_reliability'] = self.current_state[2]
+            context['stockout_frequency'] = self.current_state[3]
+            context['inventory_level'] = self.current_state[5]  # LPI-related
+            context['pandemic_severity'] = self.current_state[7]  # Disruption severity
+            context['disaster_risk'] = self.current_state[10] if len(self.current_state) > 10 else 0.0
+        else:
+            # Fallback for shorter state vectors
+            context = {
+                'lead_time': self.current_state[0] if len(self.current_state) > 0 else 0.5,
+                'service_level': self.current_state[1] if len(self.current_state) > 1 else 0.5,
+                'supplier_reliability': self.current_state[2] if len(self.current_state) > 2 else 0.5,
+                'inventory_level': 0.5,
+                'pandemic_severity': 0.0,
+                'hurricane_severity': 0.0,
+                'cyber_attack_severity': 0.0,
+                'stockout_risk': 0.1
+            }
+        
+        return context
     
     def get_episode_data(self) -> EpisodeData:
         """Convert collected data to EpisodeData format."""
@@ -496,11 +537,10 @@ def get_default_config() -> Dict[str, Any]:
     """Get default configuration if config file not found."""
     return {
         'environment': {
-            'num_hospitals': 20,
-            'num_suppliers': 10,
-            'num_distributors': 5,
+            'data_splits_path': 'DATA_SPLITS',
             'episode_length': 50,
-            'disruption_types': ['pandemic']
+            'disruption_types': ['pandemic', 'flood', 'cyber_attack'],
+            'use_real_data': True
         },
         'agents': {
             'crl_agent': {
