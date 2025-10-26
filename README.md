@@ -312,15 +312,15 @@ Real data revealed healthcare supply chain characteristics:
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#06B6D4',
+    'primaryColor': '#1E3A8A',
     'primaryTextColor': '#FFFFFF',
-    'primaryBorderColor': '#0891B2', 
-    'lineColor': '#3B82F6',
-    'secondaryColor': '#10B981',
-    'tertiaryColor': '#F59E0B',
-    'background': '#F0F9FF',
+    'primaryBorderColor': '#1E40AF',
+    'lineColor': '#374151',
+    'secondaryColor': '#065F46',
+    'tertiaryColor': '#7C2D12',
+    'background': '#F9FAFB',
     'mainBkg': '#FFFFFF',
-    'secondBkg': '#E0F2FE'
+    'secondBkg': '#F3F4F6'
   }
 }}%%
 flowchart LR
@@ -330,7 +330,7 @@ flowchart LR
         D1["🚛 Distributors<br/>Medical Supply<br/>Logistics Providers<br/>Transportation"]
     end
     
-    subgraph AI ["🤖 AI Agent Ecosystem"] 
+    subgraph AI ["🤖 AI Agent Ecosystem"]
         CRL["🧠 CRL Agent<br/>Causal Reasoning<br/>Action Masking<br/>Success Rate: 94%"]
         DET["📊 Deterministic<br/>Rule-based Logic<br/>Action: 2<br/>Success Rate: 71%"]
         PRL["⚡ Pure RL<br/>Q-Learning<br/>Action: 1<br/>Success Rate: 78%"]
@@ -343,32 +343,27 @@ flowchart LR
         MET["📈 Metrics Engine<br/>10 KPIs Validated<br/>Recovery: 2.0 episodes<br/>Service: 96.2%"]
     end
     
-    %% Entity connections
     H1 -.-> ENV
     S1 -.-> ENV
     D1 -.-> ENV
     
-    %% Agent connections  
     CRL --> ENV
     DET --> ENV
     PRL --> ENV
     CAU --> ENV
     
-    %% Causal connections
     CRL --> ORC
     CAU --> ORC
     
-    %% Metrics connections
     ENV --> MET
     CRL --> MET
     DET --> MET
     PRL --> MET
     CAU --> MET
     
-    %% Styling
-    classDef entityStyle fill:#06B6D4,stroke:#0891B2,stroke-width:3px,color:#FFFFFF
-    classDef agentStyle fill:#10B981,stroke:#059669,stroke-width:3px,color:#FFFFFF
-    classDef systemStyle fill:#F59E0B,stroke:#D97706,stroke-width:3px,color:#FFFFFF
+    classDef entityStyle fill:#1E3A8A,stroke:#1E40AF,stroke-width:2px,color:#FFFFFF
+    classDef agentStyle fill:#065F46,stroke:#059669,stroke-width:2px,color:#FFFFFF
+    classDef systemStyle fill:#7C2D12,stroke:#92400E,stroke-width:2px,color:#FFFFFF
     
     class H1,S1,D1 entityStyle
     class CRL,DET,PRL,CAU agentStyle
@@ -750,20 +745,20 @@ metrics.export_research_data('results/research_export.csv')
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#1E40AF',
+    'primaryColor': '#1E3A8A',
     'primaryTextColor': '#FFFFFF',
-    'primaryBorderColor': '#1D4ED8',
-    'lineColor': '#3B82F6',
-    'secondaryColor': '#10B981',
-    'tertiaryColor': '#F59E0B',
-    'background': '#F8FAFC',
+    'primaryBorderColor': '#1E40AF',
+    'lineColor': '#374151',
+    'secondaryColor': '#065F46',
+    'tertiaryColor': '#7C2D12',
+    'background': '#F9FAFB',
     'mainBkg': '#FFFFFF',
-    'secondBkg': '#F1F5F9'
+    'secondBkg': '#F3F4F6'
   }
 }}%%
 graph TB
     subgraph "🚀 CRL Framework Value Ecosystem"
-        CORE["� Healthcare CRL<br/>Framework"]
+        CORE["🏥 Healthcare CRL<br/>Framework"]
         
         subgraph "🎯 Intelligence Layer"
             INTEL1["🚨 Early Warning<br/>AI Detection in 6-12hrs<br/>vs 3-5 days manual"]
@@ -808,7 +803,6 @@ graph TB
         end
     end
     
-    %% Central connections
     CORE --> INTEL1
     CORE --> CAUSAL1
     CORE --> LEARN1
@@ -816,21 +810,19 @@ graph TB
     CORE --> RESILIENCE1
     CORE --> DECISION1
     
-    %% Inter-layer connections showing synergy
     INTEL2 -.-> CAUSAL2
     CAUSAL3 -.-> LEARN2
     LEARN3 -.-> ECON2
     ECON3 -.-> RESILIENCE2
     RESILIENCE3 -.-> DECISION2
     
-    %% Style definitions for enhanced visual appeal
-    classDef coreNode fill:#1e40af,stroke:#3b82f6,stroke-width:4px,color:#ffffff,font-weight:bold
-    classDef intelNode fill:#7c3aed,stroke:#a855f7,stroke-width:2px,color:#ffffff
-    classDef causalNode fill:#059669,stroke:#10b981,stroke-width:2px,color:#ffffff
-    classDef learnNode fill:#dc2626,stroke:#ef4444,stroke-width:2px,color:#ffffff
-    classDef econNode fill:#ea580c,stroke:#f97316,stroke-width:2px,color:#ffffff
-    classDef resilienceNode fill:#0891b2,stroke:#06b6d4,stroke-width:2px,color:#ffffff
-    classDef decisionNode fill:#7c2d12,stroke:#f59e0b,stroke-width:2px,color:#ffffff
+    classDef coreNode fill:#1E3A8A,stroke:#1E40AF,stroke-width:3px,color:#ffffff,font-weight:bold
+    classDef intelNode fill:#4C1D95,stroke:#5B21B6,stroke-width:2px,color:#ffffff
+    classDef causalNode fill:#065F46,stroke:#059669,stroke-width:2px,color:#ffffff
+    classDef learnNode fill:#7C2D12,stroke:#92400E,stroke-width:2px,color:#ffffff
+    classDef econNode fill:#8B5A2B,stroke:#A16207,stroke-width:2px,color:#ffffff
+    classDef resilienceNode fill:#164E63,stroke:#0891B2,stroke-width:2px,color:#ffffff
+    classDef decisionNode fill:#713F12,stroke:#A16207,stroke-width:2px,color:#ffffff
     
     class CORE coreNode
     class INTEL1,INTEL2,INTEL3,INTEL4 intelNode
@@ -1209,10 +1201,10 @@ response protocols and reduces human coordination delays.
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#3B82F6',
-    'primaryTextColor': '#1F2937',
-    'lineColor': '#6366F1',
-    'background': '#F8FAFC',
+    'primaryColor': '#1E3A8A',
+    'primaryTextColor': '#374151',
+    'lineColor': '#065F46',
+    'background': '#F9FAFB',
     'mainBkg': '#FFFFFF'
   }
 }}%%
@@ -1446,15 +1438,15 @@ human bottlenecks and dramatically improve response effectiveness.
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#3B82F6',
+    'primaryColor': '#1E3A8A',
     'primaryTextColor': '#FFFFFF',
     'primaryBorderColor': '#1E40AF',
-    'lineColor': '#6366F1',
-    'secondaryColor': '#10B981',
-    'tertiaryColor': '#8B5CF6',
-    'background': '#F8FAFC',
+    'lineColor': '#374151',
+    'secondaryColor': '#065F46',
+    'tertiaryColor': '#7C2D12',
+    'background': '#F9FAFB',
     'mainBkg': '#FFFFFF',
-    'secondBkg': '#F1F5F9'
+    'secondBkg': '#F3F4F6'
   }
 }}%%
 flowchart TD
@@ -1466,18 +1458,17 @@ flowchart TD
     J["📍 Geographic Risk<br/>Regional weighting"] --> G
     
     A --> D
-    C --> B  
+    C --> B
     E --> B
     G --> D
     I --> D
     
-    %% Enhanced styling
-    classDef inputStyle fill:#3B82F6,stroke:#1E40AF,stroke-width:3px,color:#FFFFFF
-    classDef outputStyle fill:#10B981,stroke:#059669,stroke-width:3px,color:#FFFFFF
-    classDef intermediateStyle fill:#8B5CF6,stroke:#7C3AED,stroke-width:3px,color:#FFFFFF
+    classDef inputStyle fill:#1E3A8A,stroke:#1E40AF,stroke-width:2px,color:#FFFFFF
+    classDef outputStyle fill:#065F46,stroke:#059669,stroke-width:2px,color:#FFFFFF
+    classDef intermediateStyle fill:#7C2D12,stroke:#92400E,stroke-width:2px,color:#FFFFFF
     
     class A,C,E,G,I,J inputStyle
-    class B,H outputStyle  
+    class B,H outputStyle
     class D,F intermediateStyle
 ```
 
