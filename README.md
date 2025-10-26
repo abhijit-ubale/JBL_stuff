@@ -9,6 +9,61 @@
 
 > *An AI-driven framework combining Causal Inference and Reinforcement Learning for proactive healthcare supply chain resilience, now powered by **10,425 real-world records** across 4 comprehensive datasets.*
 
+---
+
+## 📑 **Table of Contents**
+
+### **🚀 Quick Navigation**
+| Section | Description | Jump Link |
+|---------|-------------|-----------|
+| **🎯 Latest Updates** | Framework updates and real data integration | [⬇️ Major Update](#-major-update-real-data-integration-complete-) |
+| **📖 Overview** | Framework introduction and research foundation | [⬇️ Framework Overview](#-framework-overview) |
+| **🏗️ Architecture** | System design and data flow | [⬇️ System Architecture](#️-real-data-system-architecture) |
+| **🚀 Quick Start** | Getting started commands | [⬇️ Getting Started](#-real-data-getting-started-commands) |
+| **📊 Results** | Performance metrics and validation | [⬇️ Success Metrics](#-validated-success-metrics-real-data-results) |
+
+### **📋 Detailed Sections**
+
+#### **🎯 Core Framework**
+- [🎯 Major Update: Real Data Integration Complete](#-major-update-real-data-integration-complete-)
+- [🎯 Framework Overview](#-framework-overview)
+  - [📊 Real Data Foundation](#-real-data-foundation)
+  - [🔬 Research Foundation](#-research-foundation)
+- [🏗️ Real Data System Architecture](#️-real-data-system-architecture)
+
+#### **🔧 Implementation Details**  
+- [💾 Real Data Integration Details](#-real-data-integration-details---october-26-2025)
+  - [📊 Complete Source Code Transformation](#-complete-source-code-transformation)
+  - [🧪 Comprehensive Integration Testing Results](#-comprehensive-integration-testing-results)
+  - [📈 Real Data Statistics & KPIs](#-real-data-statistics--kpis)
+  - [🎯 Real Data Validation Insights](#-real-data-validation-insights)
+
+#### **🤖 System Components**
+- [👥 Framework Players & Components](#👥-framework-players--components)
+- [🔄 Real Data Framework Usage Flow](#-real-data-framework-usage-flow)
+- [📊 Real Data Framework Outputs & Validated KPIs](#-real-data-framework-outputs--validated-kpis)
+
+#### **📚 Usage & Documentation**
+- [🚀 How to Use the Framework](#-how-to-use-the-framework)
+- [🚀 Real Data Getting Started Commands](#-real-data-getting-started-commands)
+- [📁 Updated Project Structure](#-updated-project-structure-real-data-integration)
+
+#### **📈 Performance & Analysis**
+- [🏆 Validated Success Metrics](#-validated-success-metrics-real-data-results)
+- [⚡ Traditional vs CRL Framework Comparison](#-traditional-vs-crl-framework-real-world-scenarios)
+- [🎯 Real Data Insights & Discoveries](#-real-data-insights--discoveries)
+
+#### **💡 Value Proposition**
+- [🎁 Key Benefits of This Framework](#-key-benefits-of-this-framework)
+- [⚠️ What You Lose Without This Framework](#️-what-you-lose-without-this-framework)
+- [🔑 Key Takeaways](#-key-takeaways)
+
+#### **📜 Legal & Support**
+- [🤝 Contributing & Support](#-contributing--support)
+- [📜 License & Citation](#-license--citation)
+
+---
+
 ## 🎯 **Major Update: Real Data Integration Complete** ✅
 **October 26, 2025** - The framework has been completely refactored to use **100% real datasets** instead of synthetic data generation. All **8 CSV files** from DATA_SPLITS folder are now fully integrated with **comprehensive testing validated**.
 
