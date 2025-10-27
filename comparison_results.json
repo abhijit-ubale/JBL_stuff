@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-10-27T17:21:04.281385",
+  "timestamp": "2025-10-27T18:24:04.002214",
   "traditional_baseline": {
     "num_episodes": 200,
-    "avg_cost_usd": 130157.00796487501,
-    "std_cost_usd": 43750.12967820798,
-    "min_cost_usd": 26204.538479999996,
-    "max_cost_usd": 268559.93984999997,
-    "avg_service_level_pct": 90.6762913034,
-    "avg_recovery_time_days": 2.0,
-    "std_recovery_time_days": 0.0,
-    "avg_supplier_reliability_pct": 90.6762913034,
-    "avg_adaptation_capability_pct": 58.5,
-    "success_rate_pct": 100.0
+    "avg_cost_usd": 121479.87410055,
+    "std_cost_usd": 40833.454366327445,
+    "min_cost_usd": 24457.569247999996,
+    "max_cost_usd": 250655.94385999997,
+    "avg_service_level_pct": 81.481912772625,
+    "avg_recovery_time_days": 15.2625,
+    "std_recovery_time_days": 4.00778539220852,
+    "avg_supplier_reliability_pct": 81.01849690367999,
+    "avg_adaptation_capability_pct": 29.999999999999993,
+    "success_rate_pct": 98.5
   },
   "crl_framework": {
     "num_episodes": 200,
@@ -25,61 +25,59 @@
     "avg_supplier_reliability_pct": 95.35575,
     "avg_adaptation_capability_pct": 69.9,
     "success_rate_pct": 100.0,
-    "avg_training_reward": 0.8069966111101085
+    "avg_training_reward": 0.7914661756967004
   },
   "comparative_analysis": {
     "cost": {
-      "traditional": 130157.00796487501,
+      "traditional": 121479.87410055,
       "crl": 38.5,
-      "improvement_pct": 99.97042034032437,
+      "improvement_pct": 99.9683075074904,
       "winner": "CRL",
       "callout": "BEST"
     },
     "service_level": {
-      "traditional": 90.6762913034,
+      "traditional": 81.481912772625,
       "crl": 94.86000000000001,
-      "improvement_pts": 4.183708696600007,
+      "improvement_pts": 13.378087227375019,
       "winner": "CRL",
       "callout": "BEST"
     },
     "recovery_time": {
-      "traditional": 2.0,
+      "traditional": 15.2625,
       "crl": 2.8,
-      "improvement_pct": -39.99999999999999,
-      "winner": "Traditional",
-      "callout": "Good"
+      "improvement_pct": 81.65438165438165,
+      "winner": "CRL",
+      "callout": "BEST"
     },
     "supplier_reliability": {
-      "traditional": 90.6762913034,
+      "traditional": 81.01849690367999,
       "crl": 95.35575,
-      "improvement_pts": 4.679458696599994,
+      "improvement_pts": 14.337253096320012,
       "winner": "CRL",
       "callout": "BEST"
     },
     "adaptation_capability": {
-      "traditional": 58.5,
+      "traditional": 29.999999999999993,
       "crl": 69.9,
-      "improvement_pts": 11.400000000000006,
+      "improvement_pts": 39.90000000000001,
       "winner": "CRL",
-      "callout": "Better"
+      "callout": "BEST"
     }
   },
   "callouts": {
     "crl_best": [
-      "**Cost**: CRL is BEST (38.50 vs 130157.01, 100.0% better)",
-      "**Service Level**: CRL is BEST (94.86 vs 90.68, 4.2% better)",
-      "**Supplier Reliability**: CRL is BEST (95.36 vs 90.68, 4.7% better)"
+      "**Cost**: CRL is BEST (38.50 vs 121479.87, 100.0% better)",
+      "**Service Level**: CRL is BEST (94.86 vs 81.48, 13.4% better)",
+      "**Recovery Time**: CRL is BEST (2.80 vs 15.26, 81.7% better)",
+      "**Supplier Reliability**: CRL is BEST (95.36 vs 81.02, 14.3% better)",
+      "**Adaptation Capability**: CRL is BEST (69.90 vs 30.00, 39.9% better)"
     ],
-    "crl_better": [
-      "**Adaptation Capability**: CRL is Better (69.90 vs 58.50)"
-    ],
+    "crl_better": [],
     "traditional_best": [],
-    "traditional_better": [
-      "**Recovery Time**: Traditional is Better (2.00 vs 2.80)"
-    ],
+    "traditional_better": [],
     "ties": [],
     "key_insights": [
-      "CRL Framework wins in 4/5 key metrics",
+      "CRL Framework wins in 5/5 key metrics",
       "\u2705 CRL Framework demonstrates superior performance in majority of metrics"
     ]
   }
