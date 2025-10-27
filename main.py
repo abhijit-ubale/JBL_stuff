@@ -352,7 +352,7 @@ class ExperimentRunner:
         env_config = self.config['environment']
         env = HealthcareCRLEnvironment(env_config)
         
-        # Create causal model
+        # Create causal model using domain knowledge (no data fitting required)
         causal_graph, causal_oracle = create_healthcare_causal_model()
         
         # Create CRL agent
@@ -425,8 +425,10 @@ class ExperimentRunner:
         # Create environment
         env_config = self.config['environment']
         
-        # Create causal model  
-        causal_graph, causal_oracle = create_healthcare_causal_model()
+        # Create causal model with real integrated data
+        env = HealthcareCRLEnvironment(env_config)
+        integrated_data = env.data_pipeline.create_integrated_features(mode='train')
+        causal_graph, causal_oracle = create_healthcare_causal_model(data=integrated_data)
         
         # Create all agents
         agents = {

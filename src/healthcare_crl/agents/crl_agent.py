@@ -157,61 +157,74 @@ class CausalRLAgent:
             'epsilon_values': []
         }
         
-        # Action mapping
+        # Expanded action mapping for granular decisions
         self.action_mapping = {
             0: 'switch_supplier',
-            1: 'increase_safety_stock', 
+            1: 'increase_safety_stock',
             2: 'emergency_procurement',
             3: 'reroute_shipments',
-            4: 'allocate_resources',
-            5: 'no_action'  # Do nothing action
+            4: 'allocate_resources_low',
+            5: 'allocate_resources_high',
+            6: 'set_transport_air',
+            7: 'set_transport_ocean',
+            8: 'set_transport_land',
+            9: 'no_action'  # Do nothing action
         }
+        self.action_size = len(self.action_mapping)
         
         logger.info(f"Initialized CRL Agent with causal_lambda={causal_lambda}, "
                    f"action_masking={use_action_masking}, reward_shaping={use_reward_shaping}")
     
     def act(self, state: np.ndarray, context: Dict[str, Any] = None, mask: np.ndarray = None) -> int:
         """
-        Select action using epsilon-greedy policy with optional causal action masking.
-        
-        Args:
-            state: Current environment state
-            context: Contextual information for causal oracle
-            mask: Pre-computed action mask (if None, will compute from causal oracle)
-            
-        Returns:
-            Selected action index
+        Select action using epsilon-greedy policy with dynamic causal action masking.
         """
-        
-        # Convert state to tensor
         state_tensor = torch.FloatTensor(state).unsqueeze(0).to(self.device)
-        
-        # Get action mask using causal oracle
-        if self.use_action_masking and self.causal_oracle and mask is None:
-            mask = self._get_causal_action_mask(context or {})
-        elif mask is None:
-            mask = np.ones(self.action_size)  # No masking
-        
+        # Dynamic action masking based on state/context
+        if self.use_action_masking:
+            mask = self._get_dynamic_action_mask(state, context)
+        else:
+            mask = np.ones(self.action_size)
         # Epsilon-greedy action selection
         if random.random() > self.epsilon:
-            # Greedy action with masking
             with torch.no_grad():
                 q_values = self.q_network(state_tensor).cpu().numpy()[0]
-                
-                # Apply action mask (set invalid actions to -inf)
                 masked_q_values = q_values.copy()
                 masked_q_values[mask == 0] = -np.inf
-                
                 action = np.argmax(masked_q_values)
         else:
-            # Random action from valid actions only
             valid_actions = np.where(mask == 1)[0]
             if len(valid_actions) > 0:
                 action = np.random.choice(valid_actions)
             else:
-                action = np.random.randint(0, self.action_size)  # Fallback
-        
+                action = np.random.randint(0, self.action_size)
         return action
+
+    def _get_dynamic_action_mask(self, state: np.ndarray, context: Dict[str, Any] = None) -> np.ndarray:
+        """Mask infeasible actions based on current state/context."""
+        mask = np.ones(self.action_size)
+        # Example logic for masking
+        # Mask supplier switch if only one supplier
+        if context and context.get('num_suppliers', 1) <= 1:
+            mask[0] = 0
+        # Mask emergency procurement if already procured
+        if context and context.get('emergency_procured', False):
+            mask[2] = 0
+        # Mask resource allocation if no resources available
+        if context and context.get('resources_available', 0) == 0:
+            mask[4] = 0
+            mask[5] = 0
+        # Mask transport mode actions if not allowed
+        allowed_modes = context.get('allowed_transport_modes', ['Air', 'Ocean', 'Land']) if context else ['Air', 'Ocean', 'Land']
+        if 'Air' not in allowed_modes:
+            mask[6] = 0
+        if 'Ocean' not in allowed_modes:
+            mask[7] = 0
+        if 'Land' not in allowed_modes:
+            mask[8] = 0
+        # Always allow no_action
+        mask[-1] = 1
+        return mask
     
     def _get_causal_action_mask(self, context: Dict[str, Any]) -> np.ndarray:
         """Get action mask based on causal feasibility constraints."""
@@ -237,44 +250,46 @@ class CausalRLAgent:
     def learn(self, state: np.ndarray, action: int, reward: float, 
               next_state: np.ndarray, done: bool, context: Dict[str, Any] = None) -> None:
         """
-        Learn from experience with causal reward shaping.
-        
-        Args:
-            state: Current state
-            action: Action taken
-            reward: Environment reward
-            next_state: Next state
-            done: Episode termination flag
-            context: Contextual information for causal oracle
+        Learn from experience with aggressive reward shaping.
         """
-        
         # Calculate causal effect for reward shaping
         causal_effect = 0.0
         if self.use_reward_shaping and self.causal_oracle and context:
             action_name = self.action_mapping.get(action, 'no_action')
             if action_name != 'no_action':
                 causal_effect = self.causal_oracle.effect(action_name, context)
-        
-        # Causal reward shaping
-        shaped_reward = reward + self.causal_lambda * causal_effect
-        
+        # Aggressive reward shaping
+        # Penalize poor outcomes, reward resilience/adaptation/cost savings
+        penalty = 0.0
+        if context:
+            # Penalize high cost
+            penalty -= 0.001 * context.get('cost', 0)
+            # Penalize high delay
+            penalty -= 0.1 * context.get('delivery_delay', 0)
+            # Penalize low service level
+            penalty -= 1.0 * max(0, 0.9 - context.get('service_level', 1.0))
+            # Reward adaptation (e.g., successful supplier switch, emergency procurement)
+            if action_name == 'switch_supplier' and context.get('supplier_switched', False):
+                penalty += 2.0
+            if action_name == 'emergency_procurement' and context.get('emergency_procured', False):
+                penalty += 1.5
+            if action_name.startswith('allocate_resources') and context.get('resources_allocated', 0) > 0:
+                penalty += 1.0 * context.get('resources_allocated', 0)
+            # Reward cost savings
+            penalty += 0.001 * context.get('cost_savings', 0)
+        shaped_reward = reward + self.causal_lambda * causal_effect + penalty
         # Store experience
         self.replay_buffer.push(state, action, shaped_reward, next_state, done, causal_effect)
-        
         # Update step count
         self.step_count += 1
-        
         # Train if enough experiences and at regular intervals
         if len(self.replay_buffer) >= self.batch_size and self.step_count % 4 == 0:
             self._train_step()
-        
         # Update target network
         if self.step_count % self.target_update_freq == 0:
             self._update_target_network()
-        
         # Decay epsilon
         self.epsilon = max(self.epsilon_end, self.epsilon * self.epsilon_decay)
-        
         # Store metrics
         self.training_metrics['causal_effects'].append(causal_effect)
         self.training_metrics['epsilon_values'].append(self.epsilon)
@@ -437,19 +452,19 @@ class MultiAgentCRL:
 if __name__ == "__main__":
     # Test CRL agent creation
     agent = CausalRLAgent(
-        state_size=20,
-        action_size=6,
+        state_size=33,
+        action_size=10,
         causal_oracle=None,
         use_action_masking=False,
         use_reward_shaping=False
     )
     
     # Test action selection
-    test_state = np.random.randn(20)
+    test_state = np.random.randn(33)
     action = agent.act(test_state)
     print(f"Selected action: {action}")
     
     # Test learning
-    next_state = np.random.randn(20)
+    next_state = np.random.randn(33)
     agent.learn(test_state, action, 1.0, next_state, False)
     print("Learning step completed")

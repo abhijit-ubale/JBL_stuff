@@ -88,56 +88,80 @@ class ReorderSafetyStockRules:
                                         current_inventory: float, 
                                         context: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Make inventory decision using traditional fixed rules.
-        
-        Traditional logic:
-        - If inventory < reorder point: trigger replenishment
-        - If inventory < safety stock: emergency procurement
-        - No dynamic adjustment for disruptions
+        Make inventory decision using expanded, strictly enforced rules.
+        Strictly penalize deviations and add more emergency triggers.
         """
         key = f"{country}_{commodity}"
-        
         if key not in self.reorder_rules:
-            # Default rule for unknown commodity-country combinations
             return self._get_default_decision(current_inventory)
-        
         reorder_info = self.reorder_rules[key]
         safety_info = self.safety_stock_rules[key]
-        
         reorder_point = reorder_info['reorder_point']
         safety_stock = safety_info['safety_stock']
-        
-        # Traditional decision logic (static, no learning)
+        # Strict enforcement: check all relevant columns
         decision = {
             'action': 'no_action',
             'quantity': 0,
             'reasoning': 'inventory_adequate',
             'current_inventory': current_inventory,
             'reorder_point': reorder_point,
-            'safety_stock': safety_stock
+            'safety_stock': safety_stock,
+            'strict_compliance': True,
+            'penalties': [],
         }
-        
-        # Fixed rule-based decisions
+        # Emergency triggers for low inventory, high stockout, high delay, low reliability
+        emergency = False
+        penalties = []
+        # Emergency if inventory below safety stock
         if current_inventory < safety_stock:
-            # Emergency replenishment (traditional response)
+            emergency = True
+            penalties.append('inventory_below_safety_stock')
+        # Emergency if stockout frequency high
+        if context.get('Stockout_Frequency_per_Year', 0) > 0.1:
+            emergency = True
+            penalties.append('high_stockout_frequency')
+        # Emergency if delivery delay high
+        if context.get('Delivery_Delay_Days', 0) > 10:
+            emergency = True
+            penalties.append('high_delivery_delay')
+        # Emergency if supplier reliability low
+        if context.get('Supplier_Reliability_Score', 1.0) < 0.7:
+            emergency = True
+            penalties.append('low_supplier_reliability')
+        # Emergency if disruption severity high
+        if context.get('Disruption_Severity', 0) > 2:
+            emergency = True
+            penalties.append('high_disruption_severity')
+        # Emergency if CO2 emissions high (environmental compliance)
+        if context.get('CO2_Emissions_tons', 0) > 10000:
+            penalties.append('high_co2_emissions')
+        # Emergency if cost per unit high
+        if context.get('Freight_Cost_USD', 0) / max(context.get('Order_Volume_Units', 1), 1) > 10:
+            penalties.append('high_cost_per_unit')
+        # Strict enforcement: always penalize any deviation from targets
+        if context.get('On_Time_Delivery_%', 100) < 95:
+            penalties.append('low_on_time_delivery')
+        # Decision logic
+        if emergency:
             emergency_quantity = reorder_info['daily_consumption'] * reorder_info['lead_time'] * 2
             decision.update({
                 'action': 'emergency_procurement',
                 'quantity': emergency_quantity,
-                'reasoning': 'below_safety_stock',
-                'urgency': 'high'
+                'reasoning': 'strict_emergency_triggered',
+                'urgency': 'critical',
+                'penalties': penalties
             })
-            
-        elif current_inventory < reorder_point:
-            # Standard replenishment
+        elif current_inventory < reorder_point or penalties:
             regular_quantity = reorder_info['daily_consumption'] * reorder_info['lead_time'] * 1.5
             decision.update({
                 'action': 'regular_replenishment', 
                 'quantity': regular_quantity,
-                'reasoning': 'below_reorder_point',
-                'urgency': 'medium'
+                'reasoning': 'strict_replenishment_triggered',
+                'urgency': 'high' if penalties else 'medium',
+                'penalties': penalties
             })
-        
+        else:
+            decision['penalties'] = penalties
         return decision
     
     def _get_default_decision(self, current_inventory: float) -> Dict[str, Any]:

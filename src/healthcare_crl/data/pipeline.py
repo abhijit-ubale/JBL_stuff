@@ -71,6 +71,162 @@ class DisasterRecord:
 
 
 class RealDataPipeline:
+    def prepare_causal_model_data(self, integrated_df: pd.DataFrame) -> pd.DataFrame:
+        """Map and discretize integrated features to match causal graph variable names and categories for fitting."""
+        df = integrated_df.copy()
+        # Mapping: source column -> causal graph variable name
+        column_map = {
+            'Lead_Time_Days': 'lead_time_days',
+            'On_Time_Delivery_%': 'on_time_delivery_pct',
+            'Supplier_Reliability_Score': 'supplier_reliability_score',
+            'Stockout_Frequency_per_Year': 'stockout_frequency',
+            'Freight_Cost_USD': 'freight_cost_level',
+            'Disruption_Type': 'disruption_type',
+            'Disruption_Severity': 'disruption_severity',
+            'LPI Score': 'lpi_score',
+            'Customs Score': 'customs_efficiency',
+            'Infrastructure Score': 'infrastructure_quality',
+            'Transport_Mode': 'transport_mode',
+            'Warehouse_Type': 'warehouse_type',
+            'Outcome_Metric': 'outcome_metric',
+        }
+        # Rename columns
+        for src, tgt in column_map.items():
+            if src in df.columns:
+                df[tgt] = df[src]
+        # Discretize columns as per causal graph variable_domains
+        if 'lead_time_days' in df.columns:
+            df['lead_time_days'] = pd.cut(df['lead_time_days'], bins=[0,30,60,90,float('inf')], labels=['short','medium','long','very_long'], include_lowest=True)
+        if 'on_time_delivery_pct' in df.columns:
+            df['on_time_delivery_pct'] = pd.cut(df['on_time_delivery_pct'], bins=[0,80,90,95,100], labels=['low','medium','high','excellent'], include_lowest=True)
+        if 'supplier_reliability_score' in df.columns:
+            df['supplier_reliability_score'] = pd.cut(df['supplier_reliability_score'], bins=[0,0.5,0.8,1.0], labels=['low','medium','high'], include_lowest=True)
+        if 'stockout_frequency' in df.columns:
+            df['stockout_frequency'] = pd.cut(df['stockout_frequency'], bins=[0,0.1,0.2,0.5,1.0], labels=['rare','occasional','frequent','critical'], include_lowest=True)
+        if 'freight_cost_level' in df.columns:
+            df['freight_cost_level'] = pd.cut(df['freight_cost_level'], bins=[0,25000,50000,100000,float('inf')], labels=['low','medium','high','premium'], include_lowest=True)
+        if 'disruption_severity' in df.columns:
+            df['disruption_severity'] = pd.cut(df['disruption_severity'], bins=[-1,1,2,4,5], labels=['none','low','medium','high'], include_lowest=True)
+        if 'lpi_score' in df.columns:
+            df['lpi_score'] = pd.cut(df['lpi_score'], bins=[0,2,3,4,5], labels=['very_low','low','medium','high'], include_lowest=True)
+        if 'customs_efficiency' in df.columns:
+            df['customs_efficiency'] = pd.cut(df['customs_efficiency'], bins=[0,1.5,2.5,3.5,4.5], labels=['poor','fair','good','excellent'], include_lowest=True)
+        if 'infrastructure_quality' in df.columns:
+            df['infrastructure_quality'] = pd.cut(df['infrastructure_quality'], bins=[0,1.5,2.5,3.5,4.5], labels=['poor','fair','good','excellent'], include_lowest=True)
+        # Only keep columns relevant for causal model, fill missing with default
+        keep_cols = list(column_map.values())
+        present_cols = [col for col in keep_cols if col in df.columns]
+        missing_cols = [col for col in keep_cols if col not in df.columns]
+        result_df = df[present_cols].copy()
+        default_values = {
+            'lead_time_days': 'short',
+            'on_time_delivery_pct': 'low',
+            'supplier_reliability_score': 'low',
+            'stockout_frequency': 'rare',
+            'freight_cost_level': 'low',
+            'disruption_type': 'none',
+            'disruption_severity': 'none',
+            'lpi_score': 'very_low',
+            'customs_efficiency': 'poor',
+            'infrastructure_quality': 'poor',
+            'transport_mode': 'air',
+            'warehouse_type': 'public_depot',
+            'outcome_metric': 'poor',
+        }
+        for col in missing_cols:
+            result_df[col] = default_values.get(col, 'none')
+        # Diagnostic logging
+        import logging
+        diag_logger = logging.getLogger(__name__)
+        diag_logger.info(f"Causal model data shape: {result_df.shape}")
+        for col in result_df.columns:
+            vc = result_df[col].value_counts(dropna=False)
+            diag_logger.info(f"{col}: {dict(vc)}")
+        return result_df.dropna()
+        """Map and discretize integrated features to match causal graph variable names and categories for fitting."""
+        df = integrated_df.copy()
+        # Mapping: source column -> causal graph variable name
+        column_map = {
+            'Lead_Time_Days': 'lead_time_days',
+            'On_Time_Delivery_%': 'on_time_delivery_pct',
+            'Supplier_Reliability_Score': 'supplier_reliability_score',
+            'Stockout_Frequency_per_Year': 'stockout_frequency',
+            'Freight_Cost_USD': 'freight_cost_level',
+            'Disruption_Type': 'disruption_type',
+            'Disruption_Severity': 'disruption_severity',
+            'LPI Score': 'lpi_score',
+            'Customs Score': 'customs_efficiency',
+            'Infrastructure Score': 'infrastructure_quality',
+            'Transport_Mode': 'transport_mode',
+            'Warehouse_Type': 'warehouse_type',
+            'Outcome_Metric': 'outcome_metric',
+        }
+        # Rename columns
+        for src, tgt in column_map.items():
+            if src in df.columns:
+                df[tgt] = df[src]
+        # Discretize columns as per causal graph variable_domains
+        # lead_time_days
+        if 'lead_time_days' in df.columns:
+            df['lead_time_days'] = pd.cut(df['lead_time_days'], bins=[0,30,60,90,float('inf')], labels=['short','medium','long','very_long'], include_lowest=True)
+        # on_time_delivery_pct
+        if 'on_time_delivery_pct' in df.columns:
+            df['on_time_delivery_pct'] = pd.cut(df['on_time_delivery_pct'], bins=[0,80,90,95,100], labels=['low','medium','high','excellent'], include_lowest=True)
+        # supplier_reliability_score
+        if 'supplier_reliability_score' in df.columns:
+            df['supplier_reliability_score'] = pd.cut(df['supplier_reliability_score'], bins=[0,0.5,0.8,1.0], labels=['low','medium','high'], include_lowest=True)
+        # stockout_frequency
+        if 'stockout_frequency' in df.columns:
+            df['stockout_frequency'] = pd.cut(df['stockout_frequency'], bins=[0,0.1,0.2,0.5,1.0], labels=['rare','occasional','frequent','critical'], include_lowest=True)
+        # freight_cost_level
+        if 'freight_cost_level' in df.columns:
+            df['freight_cost_level'] = pd.cut(df['freight_cost_level'], bins=[0,25000,50000,100000,float('inf')], labels=['low','medium','high','premium'], include_lowest=True)
+        # disruption_severity
+        if 'disruption_severity' in df.columns:
+            df['disruption_severity'] = pd.cut(df['disruption_severity'], bins=[-1,1,2,4,5], labels=['none','low','medium','high'], include_lowest=True)
+        # lpi_score
+        if 'lpi_score' in df.columns:
+            df['lpi_score'] = pd.cut(df['lpi_score'], bins=[0,2,3,4,5], labels=['very_low','low','medium','high'], include_lowest=True)
+        # customs_efficiency
+        if 'customs_efficiency' in df.columns:
+            df['customs_efficiency'] = pd.cut(df['customs_efficiency'], bins=[0,1.5,2.5,3.5,4.5], labels=['poor','fair','good','excellent'], include_lowest=True)
+        # infrastructure_quality
+        if 'infrastructure_quality' in df.columns:
+            df['infrastructure_quality'] = pd.cut(df['infrastructure_quality'], bins=[0,1.5,2.5,3.5,4.5], labels=['poor','fair','good','excellent'], include_lowest=True)
+        # transport_mode, warehouse_type, outcome_metric, disruption_type: already categorical
+        # Only keep columns relevant for causal model, fill missing with default
+        keep_cols = list(column_map.values())
+        present_cols = [col for col in keep_cols if col in df.columns]
+        missing_cols = [col for col in keep_cols if col not in df.columns]
+        result_df = df[present_cols].copy()
+        # Fill missing columns with default category (first in domain)
+        default_values = {
+            'lead_time_days': 'short',
+            'on_time_delivery_pct': 'low',
+            'supplier_reliability_score': 'low',
+            'stockout_frequency': 'rare',
+            'freight_cost_level': 'low',
+            'disruption_type': 'none',
+            'disruption_severity': 'none',
+            'lpi_score': 'very_low',
+            'customs_efficiency': 'poor',
+            'infrastructure_quality': 'poor',
+            'transport_mode': 'air',
+            'warehouse_type': 'public_depot',
+            'outcome_metric': 'poor',
+        }
+        for col in missing_cols:
+            result_df[col] = default_values.get(col, 'none')
+
+        # Diagnostic logging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Causal model data shape: {result_df.shape}")
+        for col in result_df.columns:
+            vc = result_df[col].value_counts(dropna=False)
+            logger.info(f"{col}: {dict(vc)}")
+
+        return result_df.dropna()
     """Loads and processes real healthcare supply chain datasets."""
     
     def __init__(self, data_splits_path: str = "DATA_SPLITS"):
@@ -366,79 +522,94 @@ class RealDataPipeline:
             return pd.DataFrame(columns=['Country', 'Data_Year', 'Disaster_Risk_Score', 'Annual_Disaster_Count'])
     
     def get_feature_vector_for_state(self, record: Dict[str, Any]) -> np.ndarray:
-        """Convert a supply chain record to feature vector for ML models."""
-        
-        # Define feature extraction based on available data
+        """Convert a supply chain record to expanded feature vector for ML models, including decision variables."""
         features = []
-        
         # Supply chain features
-        features.append(record.get('Lead_Time_Days', 0) / 100.0)  # Normalized
+        features.append(record.get('Lead_Time_Days', 0) / 100.0)
         features.append(record.get('On_Time_Delivery_Normalized', 0.5))
         features.append(record.get('Supplier_Reliability_Score', 0.5))
         features.append(record.get('Stockout_Frequency_per_Year', 0.0))
-        features.append(record.get('Cost_Per_Unit', 0) / 1000.0)  # Normalized
-        
+        features.append(record.get('Cost_Per_Unit', 0) / 1000.0)
         # Logistics features
-        features.append(record.get('LPI Score', 2.5) / 5.0)  # Normalized to [0,1]
+        features.append(record.get('LPI Score', 2.5) / 5.0)
         features.append(record.get('Overall_Logistics_Efficiency', 0.5))
-        
-        # Disruption features  
+        # Disruption features
         disruption_severity = record.get('Disruption_Severity', 0)
-        features.append(disruption_severity / 5.0)  # Normalized
-        
+        features.append(disruption_severity / 5.0)
         # Transport mode (one-hot encoded)
         transport_mode = record.get('Transport_Mode', 'Air')
         for mode in ['Air', 'Ocean', 'Land']:
             features.append(1.0 if transport_mode == mode else 0.0)
-        
         # Disaster risk
         features.append(record.get('Disaster_Risk_Score', 0.1))
-        features.append(record.get('Annual_Disaster_Count', 0) / 10.0)  # Normalized
-        
+        features.append(record.get('Annual_Disaster_Count', 0) / 10.0)
         # Warehouse type
         warehouse_encoded = record.get('Warehouse_Type_Encoded', 0)
-        features.append(warehouse_encoded / 3.0)  # Assuming 4 types (0-3)
-        
+        features.append(warehouse_encoded / 3.0)
         # Commodity type diversity (simple encoding)
         commodity = record.get('Commodity_Type', 'Other')
         for comm_type in ['Malaria_RDT', 'Contraceptive', 'HIV_ARV', 'LLIN', 'Maternal_Health']:
             features.append(1.0 if commodity == comm_type else 0.0)
-        
-        # Outcome metric (target variable in some contexts)
+        # Outcome metric
         features.append(record.get('Outcome_Metric', 0.5))
-        
+        # --- Expanded features for CRL optimization ---
+        # Add CO2 emissions (normalized)
+        features.append(record.get('CO2_Emissions_Tons', 0) / 100.0)
+        # Add delivery delay (normalized)
+        features.append(record.get('Delivery_Delay_Days', 0) / 30.0)
+        # Add resupply time (normalized)
+        features.append(record.get('Resupply_Time_Days', 0) / 30.0)
+        # Add order volume (normalized)
+        features.append(record.get('Order_Volume_Units', 10000) / 10000.0)
+        # Add episode progress (if present)
+        features.append(record.get('episode_progress', 0.0))
+        # Add disruption type (one-hot: flood, pandemic, port_closure, cyber_attack, demand_spike)
+        disruption_type = record.get('Disruption_Type', 'None')
+        for dtype in ['flood', 'pandemic', 'port_closure', 'cyber_attack', 'demand_spike']:
+            features.append(1.0 if disruption_type == dtype else 0.0)
+        # --- Decision variables for CRL optimization ---
+        # Transport mode decision (already encoded above)
+        # Supplier switching (binary flag)
+        features.append(1.0 if record.get('Supplier_Switched', False) else 0.0)
+        # Emergency procurement (binary flag)
+        features.append(1.0 if record.get('Emergency_Procurement', False) else 0.0)
+        # Resource allocation (normalized value)
+        features.append(record.get('Resource_Allocation', 0.0))
         return np.array(features, dtype=np.float32)
     
     def get_state_dimension(self) -> int:
-        """Get the dimensionality of state vectors."""
-        # Based on feature vector extraction method
-        return 20  # Updated to match real feature vector size
+        """Get the dimensionality of expanded state vectors including decision variables."""
+        # 30 previous + 1 supplier switching + 1 emergency procurement + 1 resource allocation = 33
+        return 33
     
     def get_action_space_size(self) -> int:
         """Get the size of action space."""
-        return 6  # Same as before: 5 actions + no-action
+        return 10  # Expanded: 9 actions + no-action
     
     def sample_episode_data(self, mode: str = 'train', episode_length: int = 50) -> List[Dict[str, Any]]:
-        """Sample episode data for RL training."""
+        """Sample episode data for RL training with expanded scenario complexity and dynamic features."""
         integrated_df = self.create_integrated_features(mode)
-        
         if len(integrated_df) == 0:
             raise ValueError(f"No integrated data available for mode: {mode}")
-        
-        # Sample random records for episode simulation
         episode_records = []
-        
         for step in range(episode_length):
-            # Sample a random record from the integrated dataset
             record_idx = np.random.randint(0, len(integrated_df))
             record = integrated_df.iloc[record_idx].to_dict()
-            
+            # Inject more frequent/severe disruptions and demand spikes
+            if step % 5 == 0:
+                record['Disruption_Type'] = np.random.choice(['flood', 'pandemic', 'port_closure', 'cyber_attack', 'demand_spike'])
+                record['Disruption_Severity'] = np.random.randint(3, 6)
+                record['Order_Volume_Units'] = int(record.get('Order_Volume_Units', 10000) * np.random.uniform(1.2, 2.0))
+                record['Delivery_Delay_Days'] = record.get('Delivery_Delay_Days', 0) + np.random.uniform(5, 20)
+                record['CO2_Emissions_Tons'] = record.get('CO2_Emissions_Tons', 0) + np.random.uniform(1, 10)
+            elif step % 7 == 0:
+                record['Disruption_Type'] = 'demand_spike'
+                record['Order_Volume_Units'] = int(record.get('Order_Volume_Units', 10000) * np.random.uniform(1.5, 2.5))
+                record['Resupply_Time_Days'] = record.get('Resupply_Time_Days', 0) + np.random.uniform(2, 10)
             # Add step information
             record['step'] = step
             record['episode_progress'] = step / episode_length
-            
             episode_records.append(record)
-        
         return episode_records
     
     def get_dataset_statistics(self) -> Dict[str, Any]:
