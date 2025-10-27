@@ -293,7 +293,7 @@ class TraditionalBaselineSystem:
         
         return {
             'reward': reward,
-            'cost': final_cost / 1000.0,  # Normalize
+            'cost': final_cost,  # Use raw dollars for direct comparison
             'service_level': final_service_level,
             'inventory_level': min(1.0, record['Order_Volume_Units'] / 1000000),  # Normalize
             'supplier_performance': {
