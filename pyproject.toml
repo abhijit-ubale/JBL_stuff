@@ -1,0 +1,150 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "healthcare-crl"
+version = "1.0.0"
+description = "Healthcare Supply Chain Causal-Reinforcement Learning Framework"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Healthcare CRL Team", email = "team@healthcare-crl.com"},
+]
+keywords = ["healthcare", "supply chain", "reinforcement learning", "causal inference", "AI"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+dependencies = [
+    "torch>=2.0.0",
+    "gymnasium>=0.29.0", 
+    "stable-baselines3>=2.0.0",
+    "tensorboard>=2.13.0",
+    "pgmpy>=0.1.23",
+    "dowhy>=0.11",
+    "causalnex>=0.12.0",
+    "econml>=0.14.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "scikit-learn>=1.3.0",
+    "matplotlib>=3.6.0",
+    "plotly>=5.15.0",
+    "dash>=2.14.0",
+    "seaborn>=0.12.0",
+    "networkx>=3.1.0",
+    "shap>=0.42.0",
+    "lime>=0.2.0",
+    "pyyaml>=6.0",
+    "tqdm>=4.65.0",
+    "python-dotenv>=1.0.0",
+    "jsonschema>=4.17.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "flake8>=6.0.0",
+    "mypy>=1.5.0",
+    "pre-commit>=3.3.0",
+]
+docs = [
+    "sphinx>=7.1.0",
+    "sphinx-rtd-theme>=1.3.0",
+    "myst-parser>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/abhijit-ubale/JBL_stuff"
+Documentation = "https://healthcare-crl.readthedocs.io/"
+Repository = "https://github.com/abhijit-ubale/JBL_stuff.git"
+"Bug Reports" = "https://github.com/abhijit-ubale/JBL_stuff/issues"
+
+[project.scripts]
+healthcare-crl = "healthcare_crl.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+healthcare_crl = ["*.yaml", "*.json", "*.txt"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+    "--cov=healthcare_crl",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pgmpy.*",
+    "dowhy.*",
+    "causalnex.*",
+    "econml.*",
+    "gymnasium.*",
+    "stable_baselines3.*",
+    "plotly.*",
+    "dash.*",
+    "shap.*",
+    "lime.*",
+]
+ignore_missing_imports = true

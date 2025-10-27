@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-10-27T14:29:00.608780",
+  "traditional_results": {
+    "recovery_time_days": 2.0,
+    "service_level_percent": 90.69004099885001,
+    "average_cost_usd": 129.06929676918745,
+    "supplier_reliability_percent": 90.69004099885001,
+    "adaptation_capability_percent": 30.0,
+    "success_rate_percent": 100.0,
+    "episodes_processed": 400,
+    "successful_episodes": 400
+  },
+  "crl_results": {
+    "recovery_time_days": 1.875,
+    "service_level_percent": 95.5,
+    "average_cost_usd": 67200.0,
+    "supplier_reliability_percent": 92.49999999999999,
+    "adaptation_capability_percent": 80.48499651468926,
+    "success_rate_percent": 100.0,
+    "episodes_processed": 100,
+    "successful_episodes": 100
+  },
+  "improvements": {
+    "recovery_time_days": 6.25,
+    "service_level_percent": 5.303734509515752,
+    "average_cost_usd": -51965.05472806029,
+    "supplier_reliability_percent": 1.9957637919393245,
+    "adaptation_capability_percent": 168.28332171563085
+  },
+  "summary": {
+    "cost_reduction_percent": -51965.05472806029,
+    "service_improvement_percent": 5.303734509515752,
+    "recovery_speed_improvement_percent": 6.25,
+    "reliability_improvement_percent": 1.9957637919393245,
+    "adaptation_improvement_percent": 168.28332171563085
+  }
+}

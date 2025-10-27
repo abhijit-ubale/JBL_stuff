@@ -184,51 +184,37 @@ class TraditionalBaselineSystem:
         
         return composite_score
     
-    def simulate_traditional_episode(self, episode_length: int = 50, 
-                                   disruption_scenario: Optional[str] = None) -> Dict[str, List[Any]]:
+    def simulate_traditional_episode(self, record: dict) -> dict:
         """
-        Simulate traditional baseline performance over an episode using real data patterns.
-        
-        This provides episode-level data comparable to CRL agent episodes.
+        Simulate traditional baseline performance for a single record.
         """
-        
-        episode_data = {
-            'states': [],
-            'actions': [],
-            'rewards': [],
-            'costs': [],
-            'service_levels': [],
-            'inventory_levels': [],
-            'supplier_performances': [],
-            'decision_delays': [],
-            'traditional_decisions': []
+        # Simulate traditional decision-making process
+        traditional_decision = self._make_traditional_decision(record, 0)
+        # Calculate traditional performance for this record
+        step_performance = self._calculate_traditional_step_performance(record, traditional_decision, 0)
+        # Return results in expected format
+        def extract_numeric(val):
+            if isinstance(val, dict):
+                # For supplier_performance, use on_time_delivery as reliability
+                if 'on_time_delivery' in val:
+                    return float(val['on_time_delivery'])
+                if 'response_time_score' in val:
+                    return float(val['response_time_score'])
+                # Otherwise, try known keys
+                for k in ['value', 'score', 'amount', 'metric']:
+                    if k in val and isinstance(val[k], (int, float)):
+                        return val[k]
+                return 0
+            return float(val) if isinstance(val, (int, float, np.float64, np.int64, str)) and str(val).replace('.','',1).isdigit() else 0
+        # For recovery_time_days, use decision_delay from step_performance
+        return {
+            'success': True,
+            'recovery_time_days': float(step_performance.get('decision_delay', 0)),
+            'total_cost': extract_numeric(step_performance.get('cost', 0)),
+            'service_level': extract_numeric(step_performance.get('service_level', 0)),
+            'supplier_reliability': extract_numeric(step_performance.get('supplier_performance', 0))
         }
-        
-        # Sample real data for episode simulation
-        episode_records = self.ghsc_data.sample(n=min(episode_length, len(self.ghsc_data))).reset_index(drop=True)
-        
-        for step in range(episode_length):
-            record_idx = step % len(episode_records)
-            current_record = episode_records.iloc[record_idx]
-            
-            # Simulate traditional decision-making process
-            traditional_decision = self._make_traditional_decision(current_record, step)
-            
-            # Calculate traditional performance for this step
-            step_performance = self._calculate_traditional_step_performance(
-                current_record, traditional_decision, step
-            )
-            
-            # Store episode data
-            episode_data['states'].append(self._extract_state_from_record(current_record))
-            episode_data['actions'].append(traditional_decision)
-            episode_data['rewards'].append(step_performance['reward'])
-            episode_data['costs'].append(step_performance['cost'])
-            episode_data['service_levels'].append(step_performance['service_level'])
-            episode_data['inventory_levels'].append(step_performance['inventory_level'])
-            episode_data['supplier_performances'].append(step_performance['supplier_performance'])
-            episode_data['decision_delays'].append(step_performance['decision_delay'])
-            episode_data['traditional_decisions'].append(traditional_decision)
+            # ...existing code...
         
         return episode_data
     

@@ -4,13 +4,20 @@ Test script for Traditional Baseline System
 """
 
 import sys
-sys.path.append('.')
-from TRADITIONAL_RULES.traditional_baseline_system import TraditionalBaselineSystem
+from pathlib import Path
+
+# Add data directory to path
+data_path = str(Path(__file__).parent.parent / "data")
+if data_path not in sys.path:
+
+from data.TRADITIONAL_RULES.traditional_baseline_system import TraditionalBaselineSystem
 
 def main():
     print('Testing Traditional Baseline System...')
     try:
-        traditional_system = TraditionalBaselineSystem()
+        # Get correct path to DATA_SPLITS
+        data_splits_path = str(Path(__file__).parent.parent / "data" / "DATA_SPLITS")
+        traditional_system = TraditionalBaselineSystem(data_splits_path)
         metrics = traditional_system.calculate_comprehensive_traditional_metrics()
         
         print('\nKey Traditional Baseline Metrics:')

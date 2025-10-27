@@ -137,3 +137,6 @@ data:
     iot_sensors: null
     external_apis: null
   data_refresh_interval: "daily"
+
+# Data splits path for real datasets
+data_splits_path: "data/DATA_SPLITS"

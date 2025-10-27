@@ -345,7 +345,6 @@ if __name__ == "__main__":
     # Test with GHSC and LPI data
     import sys
     import os
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     
     ghsc_data = pd.read_csv('../DATA_SPLITS/GHSC_PSM_Synthetic_Resilience_Dataset_v2_consistent_traindata.csv')
     lpi_data = pd.read_csv('../DATA_SPLITS/International_LPI_from_2007_to_2023_traindata.csv')

@@ -12,6 +12,7 @@ import logging
 import argparse
 import sys
 import os
+import time
 from pathlib import Path
 import yaml
 import json
@@ -21,20 +22,17 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional
 
 # Add src directory to path for imports
-sys.path.append(str(Path(__file__).parent / 'src'))
 
-try:
-    # Import framework components
-    from data_pipeline import RealDataPipeline
-    from causal_graph import create_healthcare_causal_model, CausalOracle
-    from crl_agent import CausalRLAgent, MultiAgentCRL
-    from baselines import BaselineAgents
-    from metrics import ResilienceMetrics, EpisodeData
-except ImportError as e:
-    print(f"Import Error: {e}")
-    print("Make sure all framework components are properly installed.")
-    print("Run: python setup.py")
-    sys.exit(1)
+# Import framework components
+import src.healthcare_crl
+from src.healthcare_crl.data.pipeline import RealDataPipeline
+from src.healthcare_crl.models.causal_graph import create_healthcare_causal_model, CausalOracle
+from src.healthcare_crl.agents.crl_agent import CausalRLAgent, MultiAgentCRL
+from src.healthcare_crl.baselines.baselines import BaselineAgents
+from src.healthcare_crl.utils.metrics import ResilienceMetrics, EpisodeData
+
+# Import traditional baseline from data directory
+from data.TRADITIONAL_RULES.traditional_baseline_system import TraditionalBaselineSystem
 
 # Configure logging
 logging.basicConfig(
@@ -57,11 +55,12 @@ class HealthcareCRLEnvironment:
     def __init__(self, config: Dict[str, Any]):
         """Initialize environment from configuration."""
         self.config = config
-        self.episode_length = config.get('episode_length', 50)
-        self.disruption_types = config.get('disruption_types', ['pandemic'])
+        env_config = config.get('environment', {})
+        self.episode_length = env_config.get('episode_length', 50)
+        self.disruption_types = env_config.get('disruption_types', ['pandemic'])
         
         # Initialize real data pipeline
-        data_splits_path = config.get('data_splits_path', 'DATA_SPLITS')
+        data_splits_path = env_config.get('data_splits_path', 'data/DATA_SPLITS')
         self.data_pipeline = RealDataPipeline(data_splits_path)
         
         # State and action space dimensions from real data
@@ -537,7 +536,7 @@ def get_default_config() -> Dict[str, Any]:
     """Get default configuration if config file not found."""
     return {
         'environment': {
-            'data_splits_path': 'DATA_SPLITS',
+            'data_splits_path': 'data/DATA_SPLITS',
             'episode_length': 50,
             'disruption_types': ['pandemic', 'flood', 'cyber_attack'],
             'use_real_data': True
@@ -575,7 +574,6 @@ def launch_dashboard(config: Dict[str, Any]):
     print("Press Ctrl+C to exit dashboard mode")
     
     try:
-        import time
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
@@ -596,7 +594,7 @@ Examples:
         """
     )
     
-    parser.add_argument('--config', type=str, default='default_config.yaml',
+    parser.add_argument('--config', type=str, default='configs/default_config.yaml',
                        help='Path to experiment configuration file')
     parser.add_argument('--mode', type=str, choices=['train', 'evaluate', 'dashboard'],
                        default='train', help='Execution mode')

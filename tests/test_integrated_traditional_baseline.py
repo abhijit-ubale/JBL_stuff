@@ -5,10 +5,18 @@ Tests both traditional baseline system and integrated metrics comparison.
 
 import sys
 import pandas as pd
-sys.path.append('.')
+from pathlib import Path
 
-from TRADITIONAL_RULES.traditional_baseline_system import TraditionalBaselineSystem
-from metrics import ResilienceMetrics, EpisodeData
+# Add data directory to path for TRADITIONAL_RULES
+data_path = str(Path(__file__).parent.parent / "data")
+if data_path not in sys.path:
+
+# Add src directory to path for healthcare_crl
+src_path = str(Path(__file__).parent.parent / "src")
+if src_path not in sys.path:
+
+from data.TRADITIONAL_RULES.traditional_baseline_system import TraditionalBaselineSystem
+from src.healthcare_crl.utils.metrics import ResilienceMetrics, EpisodeData
 from datetime import datetime, timedelta
 
 def test_integrated_comparison():
@@ -19,7 +27,8 @@ def test_integrated_comparison():
     
     # Initialize Traditional Baseline System
     print("1. Initializing Traditional Baseline System...")
-    traditional_system = TraditionalBaselineSystem()
+    data_splits_path = str(Path(__file__).parent.parent / "data" / "DATA_SPLITS")
+    traditional_system = TraditionalBaselineSystem(data_splits_path)
     traditional_metrics = traditional_system.calculate_comprehensive_traditional_metrics()
     
     print(f"   ✓ Analyzed {traditional_metrics['traditional_baseline_record_count']} real records")
@@ -122,7 +131,8 @@ def test_traditional_episode_simulation():
     print("TRADITIONAL EPISODE SIMULATION TEST")
     print("="*70)
     
-    traditional_system = TraditionalBaselineSystem()
+    data_splits_path = str(Path(__file__).parent.parent / "data" / "DATA_SPLITS")
+    traditional_system = TraditionalBaselineSystem(data_splits_path)
     
     # Simulate traditional episode
     traditional_episode = traditional_system.simulate_traditional_episode(

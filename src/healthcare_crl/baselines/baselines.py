@@ -12,7 +12,7 @@ import random
 from collections import deque, namedtuple
 import logging
 
-from crl_agent import DQNetwork, ReplayBuffer
+from ..agents.crl_agent import DQNetwork, ReplayBuffer
 
 logger = logging.getLogger(__name__)
 

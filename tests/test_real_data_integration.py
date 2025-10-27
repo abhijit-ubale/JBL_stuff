@@ -9,6 +9,15 @@ import numpy as np
 import warnings
 from pathlib import Path
 
+import src.healthcare_crl
+from src.healthcare_crl.data.pipeline import RealDataPipeline
+from src.healthcare_crl.models.causal_graph import create_healthcare_causal_model, CausalOracle
+from src.healthcare_crl.agents.crl_agent import CausalRLAgent
+from src.healthcare_crl.utils.metrics import ResilienceMetrics, EpisodeData
+from src.healthcare_crl.baselines.baselines import BaselineAgents
+from main import HealthcareCRLEnvironment
+from datetime import datetime, timedelta
+
 # Suppress SyntaxWarnings from pgmpy library (Python 3.13 compatibility)
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pgmpy")
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pyro")
@@ -22,8 +31,6 @@ def test_data_pipeline():
     logger.info("Testing RealDataPipeline...")
     
     try:
-        from data_pipeline import RealDataPipeline
-        
         # Initialize pipeline
         pipeline = RealDataPipeline('DATA_SPLITS')
         
@@ -57,8 +64,6 @@ def test_causal_graph():
     logger.info("Testing CausalGraph with real data...")
     
     try:
-        from causal_graph import create_healthcare_causal_model
-        from data_pipeline import RealDataPipeline
         
         # Create pipeline for sample data
         pipeline = RealDataPipeline('DATA_SPLITS')
@@ -99,7 +104,6 @@ def test_environment():
     logger.info("Testing HealthcareCRLEnvironment...")
     
     try:
-        from main import HealthcareCRLEnvironment
         
         config = {
             'data_splits_path': 'DATA_SPLITS',
@@ -136,9 +140,6 @@ def test_agents():
     logger.info("Testing CRL and baseline agents...")
     
     try:
-        from crl_agent import CausalRLAgent
-        from baselines import BaselineAgents
-        from causal_graph import create_healthcare_causal_model
         
         # Create causal model for CRL agent
         causal_graph, causal_oracle = create_healthcare_causal_model()
@@ -180,8 +181,6 @@ def test_metrics():
     logger.info("Testing ResilienceMetrics...")
     
     try:
-        from metrics import ResilienceMetrics, EpisodeData
-        from datetime import datetime, timedelta
         
         # Create sample episode data
         episode = EpisodeData(

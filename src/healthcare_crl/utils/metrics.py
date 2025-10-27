@@ -5,20 +5,20 @@ Implements all 10 metrics from the research paper with Traditional Baseline inte
 
 import numpy as np
 import pandas as pd
+import sys
+import logging
 from typing import Dict, List, Tuple, Any, Optional
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-import logging
+from pathlib import Path
 
-logger = logging.getLogger(__name__)
+# Add data directory to path
 
 # Import Traditional Baseline System for accurate comparisons
-try:
-    from TRADITIONAL_RULES.traditional_baseline_system import TraditionalBaselineSystem
-    TRADITIONAL_BASELINE_AVAILABLE = True
-except ImportError:
-    logger.warning("Traditional Baseline System not available - using fallback baselines")
-    TRADITIONAL_BASELINE_AVAILABLE = False
+from data.TRADITIONAL_RULES.traditional_baseline_system import TraditionalBaselineSystem
+
+logger = logging.getLogger(__name__)
+TRADITIONAL_BASELINE_AVAILABLE = True
 
 
 @dataclass
@@ -44,8 +44,12 @@ class ResilienceMetrics:
     Provides comprehensive evaluation of supply chain performance with Traditional Baseline integration.
     """
     
-    def __init__(self, data_splits_path: str = "DATA_SPLITS"):
+    def __init__(self, data_splits_path: str = None):
         """Initialize metrics calculator with traditional baseline system."""
+        if data_splits_path is None:
+            # Default path relative to the package location
+            package_root = Path(__file__).parent.parent.parent.parent
+            data_splits_path = str(package_root / "data" / "DATA_SPLITS")
         self.data_splits_path = data_splits_path
         self.baseline_performance = None
         self.metric_definitions = self._define_metrics()
@@ -194,7 +198,7 @@ class ResilienceMetrics:
                                baseline_cost_per_step: float = 100.0) -> Dict[str, float]:
         """
         Calculate Cost Variance (CV) - Metric 3
-        CV = (C_actual - C_planned) / C_planned
+        CV = (C_actual - C_planned) / C_planned if C_planned != 0 else 0.0
         """
         costs = episode_data.costs
         
@@ -204,7 +208,7 @@ class ResilienceMetrics:
         total_actual_cost = sum(costs)
         total_planned_cost = baseline_cost_per_step * len(costs)
         
-        cost_variance = (total_actual_cost - total_planned_cost) / total_planned_cost
+        cost_variance = (total_actual_cost - total_planned_cost) / total_planned_cost if total_planned_cost != 0 else 0.0
         cost_increase = total_actual_cost - total_planned_cost
         
         # Cost volatility (additional measure)
@@ -258,7 +262,7 @@ class ResilienceMetrics:
     def calculate_inventory_turnover_ratio(self, episode_data: EpisodeData) -> Dict[str, float]:
         """
         Calculate Inventory Turnover Ratio (ITR) - Metric 5
-        ITR = COGS / Average_Inventory
+        ITR = COGS / Average_Inventory if Average_Inventory != 0 else 0.0
         """
         inventory_levels = episode_data.inventory_levels
         costs = episode_data.costs
@@ -319,7 +323,7 @@ class ResilienceMetrics:
         # Use Traditional Baseline System for accurate comparison
         baseline_service = self.traditional_metrics.get('traditional_service_level', 0.86)
         service_shortfall = max(0, baseline_service - np.mean(service_levels))
-        return service_shortfall / baseline_service
+        return service_shortfall / baseline_service if baseline_service != 0 else 0.0
     
     def _calculate_cost_impact(self, episode_data: EpisodeData) -> float:
         """Calculate normalized cost impact based on traditional baseline."""
@@ -328,10 +332,11 @@ class ResilienceMetrics:
             return 0.0
         
         # Use Traditional Baseline System for accurate comparison
-        baseline_cost = self.traditional_metrics.get('traditional_cost_efficiency', 85550.65) / 1000.0  # Normalize
+        baseline_cost_val = self.traditional_metrics.get('traditional_cost_efficiency', 85550.65)
+        baseline_cost = baseline_cost_val / 1000.0 if baseline_cost_val != 0 else 0.0  # Normalize
         avg_actual_cost = np.mean(costs)
         cost_increase = max(0, avg_actual_cost - baseline_cost)
-        return min(1.0, cost_increase / baseline_cost)  # Cap at 100% increase
+        return min(1.0, cost_increase / baseline_cost) if baseline_cost != 0 else 0.0  # Cap at 100% increase
     
     def _calculate_lead_time_impact(self, episode_data: EpisodeData) -> float:
         """Calculate normalized lead time impact."""
@@ -343,13 +348,14 @@ class ResilienceMetrics:
         baseline_lead_time = 0.3  # Expected normalized lead time
         avg_lead_time = np.mean(lead_times)
         lead_time_increase = max(0, avg_lead_time - baseline_lead_time)
-        return min(1.0, lead_time_increase / (1.0 - baseline_lead_time))
+        denom = (1.0 - baseline_lead_time)
+        return min(1.0, lead_time_increase / denom) if denom != 0 else 0.0
     
     def calculate_resilience_index(self, episode_data: EpisodeData, 
                                   baseline_performance: Dict[str, float] = None) -> Dict[str, float]:
         """
         Calculate Resilience Index (RI) - Metric 7
-        RI = Performance_post / Performance_pre
+        RI = Performance_post / Performance_pre if Performance_pre != 0 else 0.0
         """
         
         if baseline_performance is None:
@@ -370,7 +376,7 @@ class ResilienceMetrics:
             (baseline_performance['inventory_turnover'] / 20.0) * 0.2  # Normalize ITR
         )
         
-        resilience_index = post_performance / baseline_overall if baseline_overall > 0 else 0.0
+        resilience_index = post_performance / baseline_overall if baseline_overall != 0 else 0.0
         
         return {
             'resilience_index': float(resilience_index),
@@ -389,7 +395,7 @@ class ResilienceMetrics:
         if costs:
             baseline_cost = 70.0  # Real data baseline
             avg_cost = np.mean(costs)
-            cost_efficiency = baseline_cost / avg_cost if avg_cost > 0 else 0.0
+            cost_efficiency = baseline_cost / avg_cost if avg_cost != 0 else 0.0
         else:
             cost_efficiency = 1.0
         
@@ -398,7 +404,7 @@ class ResilienceMetrics:
         if inventory_levels and costs:
             avg_inventory = np.mean(inventory_levels)
             total_cogs = sum(costs)
-            itr = total_cogs / avg_inventory if avg_inventory > 0 else 0.0
+            itr = total_cogs / avg_inventory if avg_inventory != 0 else 0.0
             inventory_efficiency = min(1.0, itr / 12.0)  # Normalize based on healthcare norms
         else:
             inventory_efficiency = 0.5

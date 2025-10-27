@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from typing import Dict, List, Tuple, Optional, Any
 import networkx as nx
-from pgmpy.models import BayesianNetwork
+from pgmpy.models import DiscreteBayesianNetwork
 from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
 from pgmpy.inference import VariableElimination
 from pgmpy.factors.discrete import TabularCPD
@@ -203,21 +203,30 @@ class BayesianNetworkInference:
         self.bn_model = None
         self.inference_engine = None
         self.fitted = False
-        
+
     def fit(self, data: pd.DataFrame) -> None:
         """Fit Bayesian Network to observational data."""
         logger.info("Fitting Bayesian Network to data...")
-        
+
         # Create Bayesian Network structure from DAG
-        edges = list(self.causal_graph.dag.edges())
-        self.bn_model = BayesianNetwork(edges)
-        
+        # Ensure only (cause, effect) tuples are used, not weighted edges
+        edges = [(u, v) for u, v in self.causal_graph.dag.edges() if isinstance(u, str) and isinstance(v, str)]
+        try:
+            self.bn_model = DiscreteBayesianNetwork(edges)
+        except Exception as e:
+            # Defensive fallback: if pgmpy rejects the edge list, log and skip fitting
+            logger.error(f"Failed to construct DiscreteBayesianNetwork with edges={edges}: {e}")
+            self.bn_model = None
+            self.inference_engine = None
+            self.fitted = False
+            return
+
         # Discretize continuous variables if needed
         processed_data = self._preprocess_data(data)
-        
+
         # Estimate parameters using Maximum Likelihood
         estimator = MaximumLikelihoodEstimator(self.bn_model, processed_data)
-        
+
         # Fit CPDs for each variable
         for variable in self.bn_model.nodes():
             try:
@@ -227,7 +236,7 @@ class BayesianNetworkInference:
                 logger.warning(f"Could not estimate CPD for {variable}: {e}")
                 # Use uniform CPD as fallback
                 self._add_uniform_cpd(variable)
-        
+
         # Validate model
         if self.bn_model.check_model():
             self.inference_engine = VariableElimination(self.bn_model)

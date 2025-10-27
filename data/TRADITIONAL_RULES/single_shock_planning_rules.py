@@ -359,7 +359,6 @@ if __name__ == "__main__":
     # Test with disaster and GHSC data
     import sys
     import os
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     
     ghsc_data = pd.read_csv('../DATA_SPLITS/GHSC_PSM_Synthetic_Resilience_Dataset_v2_consistent_traindata.csv')
     disaster_data = pd.read_csv('../DATA_SPLITS/NaturalDisaster_public_emdat_custom_request_traindata.csv')
