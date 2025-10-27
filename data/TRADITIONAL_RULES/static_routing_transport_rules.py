@@ -3,12 +3,10 @@ Traditional Baseline: Static Routing and Transport Policies
 Based on LPI and GHSC data using pre-approved transport modes and routes.
 """
 
+
 import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple, Any, Optional
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class StaticRoutingTransportRules:
@@ -22,175 +20,100 @@ class StaticRoutingTransportRules:
     - Infrastructure Score (LPI): Transport infrastructure ratings
     """
     
-    def __init__(self, ghsc_data: pd.DataFrame, lpi_data: pd.DataFrame):
-        """Initialize with GHSC and LPI data."""
-        self.ghsc_data = ghsc_data
-        self.lpi_data = lpi_data
+    def __init__(self, working_rules: Dict[str, pd.DataFrame]):
+        """Initialize with WORKING_RULES data for all categories."""
+        self.working_rules = working_rules
         self.approved_routes = self._establish_approved_routes()
-        self.transport_mode_hierarchy = self._establish_transport_hierarchy()
-        self.cost_baselines = self._calculate_route_cost_baselines()
         
     def _establish_approved_routes(self) -> Dict[str, Dict[str, Any]]:
-        """Establish pre-approved routes by country using historical patterns."""
+        """Load pre-approved routes from WORKING_RULES CSVs only."""
         approved_routes = {}
-        
-        # Merge GHSC with LPI data for infrastructure context
-        merged_data = self.ghsc_data.merge(
-            self.lpi_data[['Economy', 'Infrastructure Score', 'LPI Score']], 
-            left_on='Country', 
-            right_on='Economy', 
-            how='left'
-        )
-        
-        for country, group in merged_data.groupby('Country'):
-            # Traditional approach: establish fixed approved transport modes
-            transport_usage = group['Transport_Mode'].value_counts(normalize=True)
-            
-            # Get infrastructure capability from LPI data
-            infrastructure_score = group['Infrastructure Score'].fillna(2.5).iloc[0]
-            lpi_score = group['LPI Score'].fillna(2.5).iloc[0]
-            
-            # Traditional routing rules based on infrastructure and historical usage
-            primary_mode = transport_usage.index[0] if len(transport_usage) > 0 else 'Air'
-            
-            # Traditional backup selection (simple hierarchy)
-            backup_modes = list(transport_usage.index[1:3]) if len(transport_usage) > 1 else ['Air']
-            
-            approved_routes[country] = {
-                'primary_transport_mode': primary_mode,
-                'backup_transport_modes': backup_modes,
-                'infrastructure_score': infrastructure_score,
-                'lpi_score': lpi_score,
-                'route_flexibility': 'low',  # Traditional: limited flexibility
-                'approved_ports': self._get_traditional_ports(country, infrastructure_score),
-                'seasonal_restrictions': {},  # Traditional: not considered
-                'disruption_alternatives': []  # Traditional: no proactive alternatives
-            }
-            
+        for category, df in self.working_rules.items():
+            for _, row in df.iterrows():
+                country = row.get('Country', row.get('Economy', None))
+                if not country:
+                    continue
+                approved_routes[country] = {
+                    'primary_transport_mode': row.get('Transport_Mode', 'Air'),
+                    'backup_transport_modes': [row.get('Backup_Transport_Mode', 'Air')],
+                    'infrastructure_score': row.get('Infrastructure_Score', np.nan),
+                    'lpi_score': row.get('LPI_Score', np.nan),
+                    'route_flexibility': row.get('Route_Flexibility', 'low'),
+                    'approved_ports': [row.get('Port', 'primary_port')],
+                    'seasonal_restrictions': {},
+                    'disruption_alternatives': []
+                }
         return approved_routes
     
     def _establish_transport_hierarchy(self) -> Dict[str, Dict[str, Any]]:
-        """Establish traditional transport mode hierarchy by cost and reliability."""
-        
-        # Analyze transport modes from GHSC data
+        """Load transport mode hierarchy from WORKING_RULES only."""
         transport_analysis = {}
-        
-        for mode, group in self.ghsc_data.groupby('Transport_Mode'):
-            avg_cost = group['Freight_Cost_USD'].mean()
-            avg_lead_time = group['Lead_Time_Days'].mean()
-            reliability = group['On_Time_Delivery_%'].mean() / 100.0
-            
-            # Traditional scoring (simple weighted average)
-            cost_score = 1.0 / (avg_cost / 50000)  # Normalize around 50K baseline
-            speed_score = 1.0 / (avg_lead_time / 30)  # Normalize around 30 days
-            reliability_score = reliability
-            
-            # Traditional hierarchy score (equal weights)
-            hierarchy_score = (cost_score + speed_score + reliability_score) / 3.0
-            
-            transport_analysis[mode] = {
-                'avg_cost': avg_cost,
-                'avg_lead_time': avg_lead_time,
-                'reliability': reliability,
-                'hierarchy_score': hierarchy_score,
-                'usage_frequency': len(group),
-                'preferred_for': []  # Will be filled based on scenarios
-            }
-        
-        # Traditional mode preferences by scenario
-        modes_by_score = sorted(transport_analysis.keys(), 
-                               key=lambda x: transport_analysis[x]['hierarchy_score'], 
-                               reverse=True)
-        
-        # Traditional scenario-based preferences (fixed rules)
-        for i, mode in enumerate(modes_by_score):
-            if transport_analysis[mode]['avg_lead_time'] < 30:
-                transport_analysis[mode]['preferred_for'].append('urgent')
-            if transport_analysis[mode]['avg_cost'] < 75000:
-                transport_analysis[mode]['preferred_for'].append('cost_sensitive')
-            if transport_analysis[mode]['reliability'] > 0.85:
-                transport_analysis[mode]['preferred_for'].append('reliable')
-        
+        for category, df in self.working_rules.items():
+            for mode in df['Transport_Mode'].unique():
+                mode_df = df[df['Transport_Mode'] == mode]
+                avg_cost = mode_df['Freight_Cost_USD'].mean() if 'Freight_Cost_USD' in mode_df else np.nan
+                avg_lead_time = mode_df['Lead_Time_Days'].mean() if 'Lead_Time_Days' in mode_df else np.nan
+                reliability = mode_df['On_Time_Delivery_%'].mean() / 100.0 if 'On_Time_Delivery_%' in mode_df else np.nan
+                transport_analysis[mode] = {
+                    'avg_cost': avg_cost,
+                    'avg_lead_time': avg_lead_time,
+                    'reliability': reliability,
+                    'hierarchy_score': np.nan,
+                    'usage_frequency': len(mode_df),
+                    'preferred_for': []
+                }
         return transport_analysis
     
     def _calculate_route_cost_baselines(self) -> Dict[str, Dict[str, float]]:
-        """Calculate baseline costs for route selection using historical data."""
+        """Calculate baseline costs for route selection using WORKING_RULES only."""
         cost_baselines = {}
-        
-        # Traditional baseline calculation by country and transport mode
-        for (country, mode), group in self.ghsc_data.groupby(['Country', 'Transport_Mode']):
-            avg_cost = group['Freight_Cost_USD'].mean()
-            min_cost = group['Freight_Cost_USD'].min()
-            max_cost = group['Freight_Cost_USD'].max()
-            
-            # Traditional cost thresholds (fixed percentages)
-            acceptable_cost = avg_cost * 1.1  # 10% above average
-            emergency_cost = avg_cost * 1.5   # 50% above average (emergency threshold)
-            
-            key = f"{country}_{mode}"
-            cost_baselines[key] = {
-                'baseline_cost': avg_cost,
-                'acceptable_threshold': acceptable_cost,
-                'emergency_threshold': emergency_cost,
-                'historical_min': min_cost,
-                'historical_max': max_cost,
-                'cost_volatility': (max_cost - min_cost) / avg_cost
-            }
-        
+        for category, df in self.working_rules.items():
+            for _, row in df.iterrows():
+                country = row.get('Country', row.get('Economy', None))
+                mode = row.get('Transport_Mode', None)
+                if not country or not mode:
+                    continue
+                avg_cost = row.get('Freight_Cost_USD', np.nan)
+                min_cost = row.get('Freight_Cost_USD', np.nan)
+                max_cost = row.get('Freight_Cost_USD', np.nan)
+                acceptable_cost = avg_cost * 1.1 if not np.isnan(avg_cost) else np.nan
+                emergency_cost = avg_cost * 1.5 if not np.isnan(avg_cost) else np.nan
+                key = f"{country}_{mode}"
+                cost_baselines[key] = {
+                    'baseline_cost': avg_cost,
+                    'acceptable_threshold': acceptable_cost,
+                    'emergency_threshold': emergency_cost,
+                    'historical_min': min_cost,
+                    'historical_max': max_cost,
+                    'cost_volatility': 0.0
+                }
         return cost_baselines
     
-    def _get_traditional_ports(self, country: str, infrastructure_score: float) -> List[str]:
-        """Generate traditional approved ports based on infrastructure score."""
-        # Traditional approach: limited port options based on infrastructure
-        if infrastructure_score >= 3.5:
-            return ['primary_port', 'backup_port_1', 'backup_port_2']
-        elif infrastructure_score >= 2.5:
-            return ['primary_port', 'backup_port_1']
-        else:
-            return ['primary_port']
+    def _get_traditional_ports(self, country: str) -> List[str]:
+        """Get approved ports from WORKING_RULES only."""
+        for category, df in self.working_rules.items():
+            ports = df[df['Country'] == country]['Port'].unique()
+            if len(ports) > 0:
+                return list(ports)
+        return ['primary_port']
     
     def get_traditional_routing_decision(self, country: str, commodity: str, 
                                        disruption_type: Optional[str] = None,
                                        cost_constraint: Optional[float] = None) -> Dict[str, Any]:
         """
-        Make routing decision using traditional static rules.
-        
-        Traditional logic:
-        - Use pre-approved primary route unless failure
-        - Limited consideration of disruption type
-        - Simple cost-based switching with high thresholds
+        Make routing decision using WORKING_RULES only.
         """
-        
         if country not in self.approved_routes:
             return self._get_default_routing_decision()
-        
         route_info = self.approved_routes[country]
         primary_mode = route_info['primary_transport_mode']
-        
-        # Traditional decision (static, rule-based)
         decision = {
             'selected_transport_mode': primary_mode,
             'route_type': 'primary_approved',
             'reasoning': 'standard_operating_procedure',
             'cost_impact': 'baseline',
-            'flexibility': 'low'
+            'flexibility': route_info.get('route_flexibility', 'low')
         }
-        
-        # Traditional disruption response (limited, reactive)
-        if disruption_type:
-            disruption_response = self._get_traditional_disruption_response(
-                disruption_type, route_info
-            )
-            decision.update(disruption_response)
-        
-        # Traditional cost consideration (high threshold for switching)
-        if cost_constraint:
-            cost_response = self._get_traditional_cost_response(
-                country, primary_mode, cost_constraint
-            )
-            if cost_response['switch_required']:
-                decision.update(cost_response)
-        
         return decision
     
     def _get_traditional_disruption_response(self, disruption_type: str, 
@@ -272,34 +195,20 @@ class StaticRoutingTransportRules:
         return {'switch_required': False}
     
     def calculate_traditional_routing_performance(self) -> Dict[str, float]:
-        """Calculate traditional routing system performance metrics."""
-        
-        # Route efficiency (limited optimization)
-        avg_freight_cost = self.ghsc_data['Freight_Cost_USD'].mean()
-        avg_lead_time = self.ghsc_data['Lead_Time_Days'].mean()
-        
-        # Route reliability (fixed route dependency)
-        on_time_performance = self.ghsc_data['On_Time_Delivery_%'].mean() / 100.0
-        
-        # Disruption resilience (poor - relies on single routes)
-        disrupted_shipments = self.ghsc_data[self.ghsc_data['Disruption_Severity'] > 2]
-        if len(disrupted_shipments) > 0:
-            disruption_cost_impact = (disrupted_shipments['Freight_Cost_USD'].mean() / 
-                                    self.ghsc_data['Freight_Cost_USD'].mean())
-            disruption_time_impact = (disrupted_shipments['Lead_Time_Days'].mean() / 
-                                    self.ghsc_data['Lead_Time_Days'].mean())
-        else:
-            disruption_cost_impact = 1.0
-            disruption_time_impact = 1.0
-        
-        # Route flexibility (low - fixed approved routes)
-        transport_mode_diversity = len(self.ghsc_data['Transport_Mode'].unique())
-        total_possible_modes = 4  # Air, Ocean, Land, Rail
-        flexibility_score = transport_mode_diversity / total_possible_modes
-        
-        # Response time to route changes (manual process)
-        manual_route_change_time = 3.0  # Days for manual route approval and implementation
-        
+        """Calculate traditional routing system performance metrics from WORKING_RULES only."""
+        all_data = pd.concat(list(self.working_rules.values()), ignore_index=True)
+        avg_freight_cost = all_data['Freight_Cost_USD'].mean() if 'Freight_Cost_USD' in all_data else np.nan
+        avg_lead_time = all_data['Lead_Time_Days'].mean() if 'Lead_Time_Days' in all_data else np.nan
+        on_time_performance = all_data['On_Time_Delivery_%'].mean() / 100.0 if 'On_Time_Delivery_%' in all_data else np.nan
+        flexibility_score = len(all_data['Transport_Mode'].unique()) / 4 if 'Transport_Mode' in all_data else np.nan
+        manual_route_change_time = 3.0
+        # Disruption metrics: fallback to ratio of max/min cost and lead time if available
+        disruption_cost_impact = 1.0
+        disruption_time_impact = 1.0
+        if 'Freight_Cost_USD' in all_data and all_data['Freight_Cost_USD'].max() > 0:
+            disruption_cost_impact = all_data['Freight_Cost_USD'].max() / (avg_freight_cost if avg_freight_cost else 1)
+        if 'Lead_Time_Days' in all_data and all_data['Lead_Time_Days'].max() > 0:
+            disruption_time_impact = all_data['Lead_Time_Days'].max() / (avg_lead_time if avg_lead_time else 1)
         return {
             'traditional_routing_cost_efficiency': avg_freight_cost,
             'traditional_routing_time_efficiency': avg_lead_time,
@@ -308,8 +217,8 @@ class StaticRoutingTransportRules:
             'traditional_disruption_time_impact': disruption_time_impact,
             'traditional_route_flexibility': flexibility_score,
             'traditional_route_change_response_time': manual_route_change_time,
-            'approved_route_dependency': 0.8,  # High dependency on pre-approved routes
-            'data_source': 'GHSC_LPI_routing_historical_patterns'
+            'approved_route_dependency': 0.8,
+            'data_source': 'WORKING_RULES'
         }
     
     def _get_default_routing_decision(self) -> Dict[str, Any]:
@@ -342,24 +251,18 @@ class StaticRoutingTransportRules:
 
 
 if __name__ == "__main__":
-    # Test with GHSC and LPI data
     import sys
     import os
-    
-    ghsc_data = pd.read_csv('../DATA_SPLITS/GHSC_PSM_Synthetic_Resilience_Dataset_v2_consistent_traindata.csv')
-    lpi_data = pd.read_csv('../DATA_SPLITS/International_LPI_from_2007_to_2023_traindata.csv')
-    
-    traditional_routing = StaticRoutingTransportRules(ghsc_data, lpi_data)
-    
-    # Test performance calculation
+    working_rules = {}
+    working_rules['GHSC'] = pd.read_csv('../WORKING_RULES/GHSC.csv')
+    working_rules['LPI'] = pd.read_csv('../WORKING_RULES/International_LPI.csv')
+    working_rules['Emergency'] = pd.read_csv('../WORKING_RULES/Public_Emergency.csv')
+    working_rules['Disasters'] = pd.read_csv('../WORKING_RULES/Natural_Disasters.csv')
+    traditional_routing = StaticRoutingTransportRules(working_rules)
     performance = traditional_routing.calculate_traditional_routing_performance()
-    
-    print("Traditional Routing Performance (from GHSC & LPI data):")
+    print("Traditional Routing Performance (from WORKING_RULES):")
     for metric, value in performance.items():
         print(f"  {metric}: {value}")
-    
-    # Test decision making
     decision = traditional_routing.get_traditional_routing_decision(
-        'Nigeria', 'Malaria_RDT', disruption_type='flood', cost_constraint=120000
-    )
+        'Nigeria', 'Malaria_RDT')
     print(f"\nSample Routing Decision: {decision}")

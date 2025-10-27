@@ -37,10 +37,17 @@ class TraditionalBaselineSystem:
         self.disaster_data = self._load_disaster_data()
         self.public_emergency_data = self._load_public_emergency_data()
         
+        # Load WORKING_RULES CSVs
+        working_rules = {}
+        working_rules['GHSC'] = pd.read_csv('data/WORKING_RULES/GHSC.csv')
+        working_rules['LPI'] = pd.read_csv('data/WORKING_RULES/International_LPI.csv')
+        working_rules['Emergency'] = pd.read_csv('data/WORKING_RULES/Public_Emergency.csv')
+        working_rules['Disasters'] = pd.read_csv('data/WORKING_RULES/Natural_Disasters.csv')
+
         # Initialize all traditional rule systems
         self.inventory_rules = ReorderSafetyStockRules(self.ghsc_data)
         self.supplier_rules = FixedLeadTimeSupplierRules(self.ghsc_data)
-        self.routing_rules = StaticRoutingTransportRules(self.ghsc_data, self.lpi_data)
+        self.routing_rules = StaticRoutingTransportRules(working_rules)
         self.planning_rules = SingleShockPlanningRules(
             self.ghsc_data, self.disaster_data, self.public_emergency_data
         )
