@@ -61,26 +61,25 @@
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#0066CC',
-    'primaryTextColor': '#FFFFFF', 
-    'primaryBorderColor': '#004499',
-    'lineColor': '#666666',
-    'secondaryColor': '#00AA44',
-    'tertiaryColor': '#FF6600',
-    'quaternaryColor': '#8A3FFC',
+    'pie1': '#2563EB',
+    'pie2': '#059669',
+    'pie3': '#0891B2',
+    'pie4': '#7C3AED',
+    'pie5': '#F59E0B',
+    'pieOuterStrokeWidth': '2px',
+    'pieSectionTextColor': '#FFFFFF',
+    'pieTitleTextSize': '18px',
+    'pieSectionTextSize': '14px',
     'background': '#FFFFFF',
-    'mainBkg': '#F8F9FA',
-    'secondBkg': '#E8F4FD',
-    'fontFamily': 'Arial, sans-serif',
-    'fontSize': '14px'
+    'fontFamily': 'Inter, system-ui, sans-serif'
   }
 }}%%
 pie title Healthcare Supply Chain ROI Impact
-    "Cost Reduction" : 18.2
-    "Service Improvement" : 11.8
-    "Speed Enhancement" : 96.8
-    "Reliability Gain" : 10.2
-    "Adaptation Capability" : 57.4
+    "Cost Reduction (18.2%)" : 18.2
+    "Service Improvement (11.8%)" : 11.8
+    "Speed Enhancement (96.8%)" : 96.8
+    "Reliability Gain (10.2%)" : 10.2
+    "Adaptation Capability (57.4%)" : 57.4
 ```
 
 ### **🎯 Business Value Proposition**
@@ -110,27 +109,34 @@ The Healthcare CRL Framework delivers **measurable ROI** through AI-driven suppl
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#059669',
+    'primaryColor': '#2563EB',
     'primaryTextColor': '#FFFFFF',
-    'primaryBorderColor': '#047857', 
-    'lineColor': '#6B7280',
-    'secondaryColor': '#DC2626',
-    'tertiaryColor': '#1E40AF',
+    'primaryBorderColor': '#1D4ED8',
+    'lineColor': '#374151',
+    'secondaryColor': '#059669',
+    'tertiaryColor': '#DC2626',
     'background': '#FFFFFF',
-    'mainBkg': '#F0FDF4',
-    'fontFamily': 'Inter, Arial, sans-serif',
-    'fontSize': '13px'
+    'mainBkg': '#F8FAFC',
+    'fontFamily': 'Inter, system-ui, sans-serif',
+    'fontSize': '14px'
   }
 }}%%
 xychart-beta
-    title "Healthcare Supply Chain Performance: Traditional vs CRL"
-    x-axis ["Cost Efficiency", "Service Level", "Recovery Speed", "Supplier Reliability", "Adaptation"]
-    y-axis "Performance %" 0 --> 100
-    bar [85.551, 86.01, 15.82, 84.54, 30]
-    bar [70, 96.2, 98.7, 93.2, 87.4]
+    title "Healthcare CRL Framework: Performance Comparison"
+    x-axis ["Cost ($K)", "Service Level (%)", "Recovery (Days)", "Reliability (%)", "Adaptability (%)"]
+    y-axis "Metric Values" 0 --> 100
+    bar "Traditional Baseline" [85.551, 86.01, 15.82, 84.54, 30.0]
+    bar "CRL Framework" [70.0, 96.2, 1.0, 93.2, 87.4]
 ```
 
-### **📈 ROI Trend Analysis**
+**📊 Performance Summary:**
+- **💰 Cost Efficiency**: $85.5K → $70K (**18.2% reduction**)
+- **📈 Service Level**: 86.01% → 96.2% (**+11.8% improvement**)  
+- **⚡ Recovery Speed**: 15.82 days → 1 day (**96.8% faster**)
+- **🤝 Supplier Reliability**: 84.54% → 93.2% (**+10.2% improvement**)
+- **🧠 Adaptability**: 30% → 87.4% (**+57.4% enhancement**)
+
+### **📈 ROI Implementation Timeline**
 
 ```mermaid
 %%{init: {
@@ -138,29 +144,42 @@ xychart-beta
   'themeVariables': {
     'primaryColor': '#1E40AF',
     'primaryTextColor': '#FFFFFF',
+    'primaryBorderColor': '#1E3A8A',
     'lineColor': '#059669',
     'background': '#FFFFFF',
-    'fontFamily': 'Inter, Arial, sans-serif'
+    'mainBkg': '#F8FAFC',
+    'fontFamily': 'Inter, Arial, sans-serif',
+    'fontSize': '13px'
   }
 }}%%
-gitgraph
-    commit id: "Baseline System"
-    branch cost-optimization
-    checkout cost-optimization
-    commit id: "-18.2% Cost Reduction"
-    checkout main
-    merge cost-optimization
-    branch service-improvement  
-    checkout service-improvement
-    commit id: "+11.8% Service Level"
-    checkout main
-    merge service-improvement
-    branch speed-enhancement
-    checkout speed-enhancement
-    commit id: "96.8% Faster Recovery"
-    checkout main
-    merge speed-enhancement
-    commit id: "Full ROI Achievement"
+timeline
+    title ROI Achievement Milestones
+    
+    section Phase 1
+        Traditional Baseline    : Established baseline metrics
+                               : 15.82 days recovery
+                               : 86.01% service level
+                               : $85,551 average cost
+    
+    section Phase 2
+        Cost Optimization      : Implemented dynamic routing
+                              : Achieved -18.2% cost reduction
+                              : Reduced to $70K average
+    
+    section Phase 3
+        Service Enhancement    : Deployed causal reasoning
+                              : Achieved +11.8% service improvement
+                              : Reached 96.2% service level
+    
+    section Phase 4
+        Speed Acceleration     : Activated AI-driven response
+                              : Achieved 96.8% faster recovery
+                              : Reduced to ~1 day response time
+    
+    section Phase 5
+        Full ROI Realization   : Complete system integration
+                              : $4.2M-$8.7M annual savings
+                              : 87.4% adaptation capability
 ```
 
 ### **🎯 Key Performance Indicators**
@@ -169,20 +188,74 @@ gitgraph
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#7C3AED',
-    'primaryTextColor': '#FFFFFF',
-    'primaryBorderColor': '#6D28D9',
+    'pie1': '#2563EB',
+    'pie2': '#059669', 
+    'pie3': '#DC2626',
+    'pie4': '#F59E0B',
+    'pie5': '#8B5CF6',
+    'pieOuterStrokeWidth': '2px',
+    'pieSectionTextColor': '#FFFFFF',
+    'pieTitleTextSize': '18px',
+    'pieSectionTextSize': '14px',
     'background': '#FFFFFF',
-    'mainBkg': '#FAF5FF',
-    'fontFamily': 'Inter, Arial, sans-serif'
+    'fontFamily': 'Inter, system-ui, sans-serif'
   }
 }}%%
-pie title Annual Cost Savings Breakdown ($4.2M - $8.7M)
+pie title Annual Cost Savings Distribution ($4.2M - $8.7M)
     "Inventory Optimization" : 35
     "Emergency Response" : 25
     "Administrative Automation" : 20
     "Supplier Efficiency" : 15
     "Predictive Maintenance" : 5
+```
+
+**💰 Savings Breakdown:**
+- **📦 Inventory Optimization**: $1.47M - $3.05M (35%)
+- **🚨 Emergency Response**: $1.05M - $2.18M (25%)  
+- **🤖 Administrative Automation**: $0.84M - $1.74M (20%)
+- **🤝 Supplier Efficiency**: $0.63M - $1.31M (15%)
+- **🔧 Predictive Maintenance**: $0.21M - $0.44M (5%)
+
+### **⚡ Performance Improvement Flow**
+
+```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#059669',
+    'primaryTextColor': '#FFFFFF',
+    'primaryBorderColor': '#047857',
+    'lineColor': '#6B7280',
+    'secondaryColor': '#DC2626',
+    'tertiaryColor': '#F59E0B',
+    'background': '#FFFFFF',
+    'mainBkg': '#F0FDF4',
+    'fontFamily': 'Inter, Arial, sans-serif',
+    'fontSize': '12px'
+  }
+}}%%
+flowchart LR
+    A["🏥 Traditional System<br/>📊 Baseline Performance<br/>⏱️ 15.82 days recovery<br/>💰 $85,551 cost"] --> B["⚡ CRL Enhancement<br/>🧠 AI Implementation<br/>📈 Real-time Learning<br/>🎯 Causal Reasoning"]
+    
+    B --> C["💰 Cost Optimization<br/>📉 -18.2% reduction<br/>💸 $70K average<br/>✅ $15,551 savings"]
+    
+    B --> D["📊 Service Enhancement<br/>📈 +11.8% improvement<br/>🎯 96.2% service level<br/>✅ 10.19% gain"]
+    
+    B --> E["⚡ Speed Acceleration<br/>🚀 96.8% faster<br/>⏱️ ~1 day response<br/>✅ 14.82 days saved"]
+    
+    C --> F["🎯 ROI Achievement<br/>💎 $4.2M-$8.7M savings<br/>📈 Multi-metric success<br/>🏆 87.4% adaptability"]
+    D --> F
+    E --> F
+    
+    classDef traditional fill:#DC2626,stroke:#B91C1C,stroke-width:2px,color:#FFFFFF,font-weight:bold
+    classDef enhancement fill:#1E40AF,stroke:#1E3A8A,stroke-width:2px,color:#FFFFFF,font-weight:bold
+    classDef improvements fill:#059669,stroke:#047857,stroke-width:2px,color:#FFFFFF,font-weight:bold
+    classDef roi fill:#7C3AED,stroke:#6D28D9,stroke-width:2px,color:#FFFFFF,font-weight:bold
+    
+    class A traditional
+    class B enhancement
+    class C,D,E improvements
+    class F roi
 ```
 
 ---
@@ -231,15 +304,15 @@ Based on peer-reviewed research: *"AI-Driven Supply Chain Resilience under Multi
     'primaryBorderColor': '#1E40AF',
     'lineColor': '#6B7280',
     'secondaryColor': '#059669',
-    'tertiaryColor': '#DC2626',
+    'tertiaryColor': '#0891B2',
     'quaternaryColor': '#7C3AED',
     'background': '#FFFFFF',
     'mainBkg': '#F8FAFC',
     'secondBkg': '#E2E8F0',
     'tertiaryBkg': '#CBD5E1',
-    'fontFamily': 'Inter, Arial, sans-serif',
-    'fontSize': '12px',
-    'fontWeight': '500'
+    'fontFamily': 'Inter, system-ui, sans-serif',
+    'fontSize': '14px',
+    'fontWeight': '600'
   }
 }}%%
 flowchart TD
@@ -309,13 +382,13 @@ flowchart TD
     Q --> R
     Q --> S
     
-    %% Enhanced Color Scheme with High Contrast
+    %% Professional Color Scheme with High Contrast
     classDef dataNodes fill:#1E3A8A,stroke:#1E40AF,stroke-width:2px,color:#FFFFFF,font-weight:bold
     classDef processNodes fill:#059669,stroke:#047857,stroke-width:2px,color:#FFFFFF,font-weight:bold
-    classDef causalNodes fill:#DC2626,stroke:#B91C1C,stroke-width:2px,color:#FFFFFF,font-weight:bold
+    classDef causalNodes fill:#0891B2,stroke:#0E7490,stroke-width:2px,color:#FFFFFF,font-weight:bold
     classDef rlNodes fill:#7C3AED,stroke:#6D28D9,stroke-width:2px,color:#FFFFFF,font-weight:bold
     classDef traditionalNodes fill:#F59E0B,stroke:#D97706,stroke-width:2px,color:#FFFFFF,font-weight:bold
-    classDef evalNodes fill:#0891B2,stroke:#0E7490,stroke-width:2px,color:#FFFFFF,font-weight:bold
+    classDef evalNodes fill:#2563EB,stroke:#1D4ED8,stroke-width:2px,color:#FFFFFF,font-weight:bold
     
     class A,B,C,D dataNodes
     class E,F processNodes
